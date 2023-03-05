@@ -41,6 +41,7 @@ body {
   line-height: 1;
   background-color: black;
   color: #ffffff;
+  overflow-x:hidden;
 }
 menu, ol, ul {
   list-style: none;
