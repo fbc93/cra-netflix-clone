@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { RecoilRoot } from 'recoil';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { theme } from './theme';
-import App from './App';
 import { RouterProvider } from 'react-router-dom';
 import Router from './Router';
 
@@ -71,9 +70,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <RecoilRoot>
-      <ThemeProvider theme={theme} />
       <GlobalStyle />
-      <RouterProvider router={Router} />
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={Router} />
+      </ThemeProvider>
     </RecoilRoot>
   </React.StrictMode>
 );
