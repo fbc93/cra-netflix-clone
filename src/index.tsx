@@ -4,6 +4,8 @@ import { RecoilRoot } from 'recoil';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { theme } from './theme';
 import App from './App';
+import { RouterProvider } from 'react-router-dom';
+import Router from './Router';
 
 const GlobalStyle = createGlobalStyle`
 html, body, div, span, applet, object, iframe,
@@ -71,7 +73,7 @@ root.render(
     <RecoilRoot>
       <ThemeProvider theme={theme} />
       <GlobalStyle />
-      <App />
+      <RouterProvider router={Router} />
     </RecoilRoot>
   </React.StrictMode>
 );
