@@ -5,9 +5,7 @@ import styled from "styled-components";
 import { getMovie } from "../api";
 import { makeImagePath } from "../utils";
 
-const Wrapper = styled.div`
-  
-`;
+const Wrapper = styled.div``;
 
 const Loader = styled.div`
   height: 20vh;
@@ -51,6 +49,7 @@ const Row = styled(motion.div)`
 `;
 
 const Box = styled(motion.div) <{ bgphoto: string }>`
+  cursor:pointer;
   background-color: #ffffff;
   background-image: url(${props => props.bgphoto});
   height: 200px;
@@ -58,6 +57,27 @@ const Box = styled(motion.div) <{ bgphoto: string }>`
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
+`;
+
+const Info = styled(motion.div)`
+  padding:10px;
+  opacity:0;
+  position: relative;
+  width:100%;
+  bottom:0;
+  background-color: ${props => props.theme.red};
+
+  h4 {
+    text-align: center;
+    font-size:18px;
+  }
 `;
 
 const rowVariants = {
@@ -69,6 +89,32 @@ const rowVariants = {
   },
   exit: {
     x: -window.outerWidth - 5
+  }
+}
+
+const BoxVariant = {
+  normal: {
+    scale: 1
+  },
+  hover: {
+    scale: 1.2,
+    y: -50,
+    transition: {
+      delay: 0.2,
+      duration: 0.3,
+      type: "tween"
+    }
+  }
+}
+
+const infoVariants = {
+  hover: {
+    opacity: 1
+  },
+  transition: {
+    delay: 0.2,
+    duration: 0.3,
+    type: "tween"
   }
 }
 
@@ -129,14 +175,24 @@ function Home() {
                     <Box
                       key={movie.id}
                       bgphoto={makeImagePath(movie.poster_path, "w500")}
-                    >{movie.title}</Box>
+                      variants={BoxVariant}
+                      initial="normal"
+                      whileHover="hover"
+                      transition={{
+                        type: "tween"
+                      }}
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
                   ))}
               </Row>
             </AnimatePresence>
           </Slider>
         </>
       }
-    </Wrapper>
+    </Wrapper >
   );
 }
 
