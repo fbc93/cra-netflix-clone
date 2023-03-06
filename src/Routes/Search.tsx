@@ -52,6 +52,27 @@ function Search() {
         <>
           <SearchSection>
             <Title>
+              배우 / 감독
+              &#40;{data?.results.filter((item: any) => item.media_type === "person").length}&#41;
+            </Title>
+
+            <ItemList>
+              {data?.results.map((item: any) => (
+
+                item.media_type === "person" ? (
+                  <Item key={item.id}>
+                    <ImgBox bgphoto={makeImagePath(item.profile_path, "w500")} />
+                    <strong>{item.title ? item.title : item.name}</strong>
+                    <p>{item.known_for_department}</p>
+                  </Item>
+                ) : null
+
+              ))}
+            </ItemList>
+          </SearchSection>
+
+          <SearchSection>
+            <Title>
               영화
               &#40;{data?.results.filter((item: any) => item.media_type === "movie").length}&#41;
             </Title>
