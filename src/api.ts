@@ -16,6 +16,25 @@ export interface IMovie {
   vote_average: number,
   vote_count: number
 }
+
+export interface ISearch {
+  results: {
+    adult: boolean,
+    backdrop_path: string,
+    id: number,
+    title: string,
+    original_title: string,
+    overview: string,
+    poster_path: string,
+    media_type: string,
+    genre_ids: [],
+    popularity: number,
+    release_date: string,
+    video: boolean,
+    vote_average: number,
+    vote_count: number
+  }
+}
 export interface IGetMoviesResult {
   dates: {
     maximum: string,
@@ -29,4 +48,8 @@ export interface IGetMoviesResult {
 
 export function getMovie() {
   return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&region=kr`).then((res) => res.json());
+}
+
+export function getSearch(KEYWORD: string) {
+  return fetch(`${BASE_PATH}/search/multi?api_key=${API_KEY}&language=ko-KR&query=${KEYWORD}&page=1&include_adult=false&region=ko`).then((res) => res.json());
 }

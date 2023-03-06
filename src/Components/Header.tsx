@@ -1,7 +1,8 @@
-import { Link, useMatch } from 'react-router-dom';
+import { Link, useMatch, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, useAnimation, useScroll } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 const Navigation = styled(motion.nav)`
   width: 100%;
@@ -82,6 +83,14 @@ const SearchInput = styled(motion.input)`
 
 const SearchIcon = styled(motion.span)`
   position: absolute;
+  left:-40px;
+`;
+
+const SearchForm = styled.form`
+  color:white;
+  display: flex;
+  align-items: center;
+  position: relative;
 `;
 
 const logoVariants = {
@@ -106,7 +115,9 @@ const navVariants = {
   }
 }
 
-
+interface IForm {
+  keyword: string,
+}
 
 function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -142,6 +153,13 @@ function Header() {
     });
   }, [scrollY, navAnimation]);
 
+  const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<IForm>();
+  const onValid = (data: IForm) => {
+    console.log(data);
+    navigate(`search?keyword=${data.keyword}`);
+  };
+
   return (
     <Navigation
       variants={navVariants}
@@ -168,7 +186,7 @@ function Header() {
           </Item>
         </Items>
       </Col>
-      <Col>
+      <SearchForm onSubmit={handleSubmit(onValid)}>
         <SearchBtn onClick={toggleSearch}>
           <SearchIcon
             initial={{ x: 0 }}
@@ -179,13 +197,15 @@ function Header() {
           </SearchIcon>
 
         </SearchBtn>
+
         <SearchInput
+          {...register("keyword", { required: true, minLength: 2 })}
           initial={{ scaleX: 0 }}
           animate={inputAnimation}
           transition={{ type: "linear" }}
           placeholder='검색어를 입력하세요.'
         />
-      </Col>
+      </SearchForm>
     </Navigation >
   )
 }
