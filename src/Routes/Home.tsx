@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { useMatch, useNavigate } from "react-router-dom";
@@ -81,6 +81,46 @@ const Info = styled(motion.div)`
   }
 `;
 
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top:0;
+  width:100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  opacity: 0;
+`;
+
+const BigMovie = styled(motion.div)`
+  position: absolute;
+  width: 40vw;
+  height: 80vh;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-color: #555555;
+  border-radius: 15px;
+  overflow: hidden;
+`;
+
+const BigCover = styled.div`
+  background-size: cover;
+  background-position: center center;
+  width:100%;
+  height: 400px;
+`;
+const BigTitle = styled.h2`
+  color: ${props => props.theme.black.lighter};
+  padding:10px;
+  font-size:28px;
+`;
+
+const BigOverview = styled.p`
+  color: ${props => props.theme.black.lighter};
+  padding:10px;
+  line-height: 1.5;
+`;
+
+
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -128,15 +168,19 @@ interface IMovie {
 function Home() {
   const navigate = useNavigate();
   const bigMovieMatch = useMatch("/movies/:movieId");
-  const { data, isLoading } = useQuery(["movies", "nowPlaying"], getMovie);
+  const { data, isLoading } = useQuery(
+    ["movies", "nowPlaying"],
+    getMovie
+  );
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const { scrollY } = useScroll();
 
   const increaseIndex = () => {
     if (data) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data?.results.length - 1;
+      const totalMovies = data.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => prev === maxIndex ? 0 : prev + 1);
     }
@@ -147,6 +191,14 @@ function Home() {
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
   };
+
+  const onOverlayClick = () => navigate("/");
+
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find((movie: IMovie) => movie.id + "" === bigMovieMatch.params.movieId);
+
+  //console.log(clickedMovie);
 
   return (
     <Wrapper>
@@ -170,7 +222,7 @@ function Home() {
                 exit="exit"
                 transition={{ type: "tween", duration: 1 }}
               >
-                {data.results
+                {data?.results
                   .slice(1)
                   .slice(offset * index, offset * index + offset)
                   .map((movie: IMovie) => (
@@ -197,18 +249,27 @@ function Home() {
 
           <AnimatePresence>
             {
-              bigMovieMatch && <motion.div
-                layoutId={bigMovieMatch.params.movieId}
-                style={{
-                  position: "absolute",
-                  width: "40vw",
-                  height: "80vh",
-                  backgroundColor: "red",
-                  top: "50px",
-                  left: 0,
-                  right: 0,
-                  margin: "0 auto"
-                }} />
+              bigMovieMatch &&
+              <>
+                <Overlay
+                  onClick={onOverlayClick}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                />
+                <BigMovie
+                  layoutId={bigMovieMatch.params.movieId}
+                  style={{
+                    top: scrollY.get() + 100
+                  }}>
+                  {clickedMovie &&
+                    <>
+                      <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
+                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigOverview>{clickedMovie.overview}</BigOverview>
+                    </>
+                  }
+                </BigMovie>
+              </>
             }
           </AnimatePresence>
         </>
