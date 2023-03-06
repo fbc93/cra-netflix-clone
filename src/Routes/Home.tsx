@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getMovie } from "../api";
 import { makeImagePath } from "../utils";
@@ -119,18 +120,19 @@ const infoVariants = {
 }
 
 interface IMovie {
-  id: string,
+  id: number,
   title: string,
   poster_path: string
 }
 
 function Home() {
+  const navigate = useNavigate();
+  const bigMovieMatch = useMatch("/movies/:movieId");
   const { data, isLoading } = useQuery(["movies", "nowPlaying"], getMovie);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
 
   const increaseIndex = () => {
-
     if (data) {
       if (leaving) return;
       toggleLeaving();
@@ -141,10 +143,10 @@ function Home() {
   };
 
   const toggleLeaving = () => setLeaving(prev => !prev);
-
   const offset = 6;
-
-  console.log(data);
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
 
   return (
     <Wrapper>
@@ -173,7 +175,9 @@ function Home() {
                   .slice(offset * index, offset * index + offset)
                   .map((movie: IMovie) => (
                     <Box
+                      layoutId={movie.id + ""}
                       key={movie.id}
+                      onClick={() => onBoxClicked(movie.id)}
                       bgphoto={makeImagePath(movie.poster_path, "w500")}
                       variants={BoxVariant}
                       initial="normal"
@@ -190,6 +194,23 @@ function Home() {
               </Row>
             </AnimatePresence>
           </Slider>
+
+          <AnimatePresence>
+            {
+              bigMovieMatch && <motion.div
+                layoutId={bigMovieMatch.params.movieId}
+                style={{
+                  position: "absolute",
+                  width: "40vw",
+                  height: "80vh",
+                  backgroundColor: "red",
+                  top: "50px",
+                  left: 0,
+                  right: 0,
+                  margin: "0 auto"
+                }} />
+            }
+          </AnimatePresence>
         </>
       }
     </Wrapper >

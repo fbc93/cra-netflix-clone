@@ -15,21 +15,17 @@ const Router = createBrowserRouter([
         element: <Home />
       },
       {
+        path: "movies/:movieId",
+        element: <Home />
+      },
+      {
         path: "tv",
         element: <Tv />
       },
       {
-        path: "/search",
+        path: "search",
         element: <Search />
-      },
-      {
-        path: "/movie/:id",
-        element: <Tv />
-      },
-      {
-        path: "/tv/:id",
-        element: <Tv />
-      },
+      }
     ],
 
     errorElement: <NotFound />
