@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
-import { getSearch, ISearch } from "../api";
+import { getSearch } from "../api";
 import { makeImagePath } from "../utils";
 
 const Wrapper = styled.div`

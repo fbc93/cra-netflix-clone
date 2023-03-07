@@ -3,11 +3,11 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getMovie } from "../api";
+import { getTrending, IMovie } from "../api";
 import { makeImagePath } from "../utils";
+import ReactPlayer from 'react-player/lazy';
 
 const Wrapper = styled.div``;
-
 const Loader = styled.div`
   height: 20vh;
   display: flex;
@@ -29,11 +29,13 @@ const Banner = styled.div<{ bgphoto: string }>`
 
 const Title = styled.h2`
   font-size:60px;
-  margin-bottom:20px;
+  font-weight: bold;
+  margin-bottom:35px;
 `;
 const Overview = styled.p`
   width:50%;
-  font-size:25px;
+  font-size:20px;
+  line-height: 1.5;
 `;
 
 const Slider = styled(motion.div)`
@@ -120,6 +122,9 @@ const BigOverview = styled.p`
   line-height: 1.5;
 `;
 
+const TrailerMovie = styled.div`
+  width:100px;
+`;
 
 const rowVariants = {
   hidden: {
@@ -159,22 +164,20 @@ const infoVariants = {
   }
 }
 
-interface IMovie {
-  id: number,
-  title: string,
-  poster_path: string
-}
-
 function Home() {
-  const navigate = useNavigate();
-  const bigMovieMatch = useMatch("/movies/:movieId");
   const { data, isLoading } = useQuery(
-    ["movies", "nowPlaying"],
-    getMovie
+    "Trend",
+    getTrending
   );
+
+  console.log(data?.results)
+
+  const bigMovieMatch = useMatch("/trending/:trendId");
+  const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const { scrollY } = useScroll();
+  const offset = 6;
 
   const increaseIndex = () => {
     if (data) {
@@ -187,18 +190,16 @@ function Home() {
   };
 
   const toggleLeaving = () => setLeaving(prev => !prev);
-  const offset = 6;
+
   const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+    navigate(`/trending/${movieId}`);
   };
 
   const onOverlayClick = () => navigate("/");
 
   const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    data?.results.find((movie: IMovie) => movie.id + "" === bigMovieMatch.params.movieId);
-
-  //console.log(clickedMovie);
+    bigMovieMatch?.params.trendId &&
+    data?.results.find((movie: IMovie) => movie.id + "" === bigMovieMatch.params.trendId);
 
   return (
     <Wrapper>
@@ -206,11 +207,12 @@ function Home() {
         <Loader>Loading...</Loader> :
         <>
           <Banner onClick={increaseIndex} bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
-            <Title>{data?.results[0].title}</Title>
+            <Title>{data?.results[0].title ? data?.results[0].title : data?.results[0].name}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
 
           <Slider>
+            <h1>오늘하루 인기있었던 영화/TV프로그램</h1>
             <AnimatePresence
               initial={false}
               onExitComplete={toggleLeaving}>
@@ -239,7 +241,7 @@ function Home() {
                       }}
                     >
                       <Info variants={infoVariants}>
-                        <h4>{movie.title}</h4>
+                        <h4>{movie.name ? movie.name : movie.title}</h4>
                       </Info>
                     </Box>
                   ))}
@@ -257,14 +259,24 @@ function Home() {
                   exit={{ opacity: 0 }}
                 />
                 <BigMovie
-                  layoutId={bigMovieMatch.params.movieId}
-                  style={{
-                    top: scrollY.get() + 100
-                  }}>
+                  layoutId={bigMovieMatch.params.trendId}
+                  style={{ top: scrollY.get() + 100 }}>
                   {clickedMovie &&
                     <>
                       <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
-                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigTitle>{clickedMovie.title ? clickedMovie.title : clickedMovie.name}</BigTitle>
+                      <TrailerMovie>
+                        <ReactPlayer
+                          url={'https://youtu.be/9dsN9bTyq0g'}
+                          width='100%'
+                          height='100%'
+                          playing={true}
+                          muted={true}
+                          controls={false}
+                          autoPlay={true}
+                          loop={true}
+                        />
+                      </TrailerMovie>
                       <BigOverview>{clickedMovie.overview}</BigOverview>
                     </>
                   }

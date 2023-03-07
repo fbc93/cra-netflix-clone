@@ -40,6 +40,7 @@ footer, header, hgroup, main, menu, nav, section {
 body {
   line-height: 1;
   background-color: black;
+  font-family: 'Noto Sans KR', sans-serif;
   color: #ffffff;
   overflow-x:hidden;
 }
