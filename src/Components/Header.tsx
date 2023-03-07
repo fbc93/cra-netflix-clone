@@ -11,6 +11,7 @@ const PinHeader = styled(motion.header)`
   justify-content: space-between;
   align-items: center;
   position: fixed;
+  z-index: 1;
   top:0;
   padding: 0 4%;
   font-size:14px;
@@ -163,7 +164,7 @@ function Header() {
       transition: {
         duration: 1,
         repeat: Infinity,
-        repeatDelay: 5
+        repeatDelay: 8
       }
     },
     hover: {
