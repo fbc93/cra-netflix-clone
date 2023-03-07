@@ -1,47 +1,42 @@
 import { Link, useMatch, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import { motion, useAnimation, useScroll } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import styled from 'styled-components';
 
-const Navi = styled(motion.nav)`
+const PinHeader = styled(motion.header)`
   width: 100%;
   height: 68px;
-  font-size:14px;
-  position: fixed;
-  top:0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  top:0;
   padding: 0 4%;
+  font-size:14px;
 `;
 
-const Logo = styled(Link)`
+const Logo = styled(motion(Link))`
   display: block;
-  width:90px;
+  width:110px;
+  height:30px;
   margin-right:50px;
+`;
 
-  svg {
-    fill: ${(props) => props.theme.red};
-  }
+const Svg = styled.svg`
   path {
-    stroke-width: 6px;
+    stroke: ${props => props.theme.red};
+    stroke-width: 5;
   }
 `;
 
-const LeftBox = styled.div`
+const LeftNav = styled.ul`
   display: flex;
-  height: 20px;
-  align-items: center;
-  align-items: flex-start;
+  flex:auto;
+  height: 30px;
 `;
 
-const MenuList = styled.ul`
-  display: flex;
-  align-items: center;
-`;
-
-const MenuItem = styled.li`
+const Item = styled.li`
   position: relative;
   margin-right:20px;
   &:hover{
@@ -56,51 +51,48 @@ const MenuItem = styled.li`
   }
 `;
 
-const SearchBtn = styled.div`
-  color:${(props) => props.theme.white.lighter};
-  cursor:pointer;
-  display: flex;
-  align-items: center;
-`;
-
 const Circle = styled(motion.span)`
   position: absolute;
   width:5px;
   height: 5px;
   border-radius: 50%;
-  bottom:-14px;
+  bottom:0px;
   left:0;
   right:0;
   margin:0 auto;
   background-color: ${(props) => props.theme.red};
 `;
 
+const RightNav = styled(motion.div)``;
+
+const SearchForm = styled(motion.form)`
+  display: flex;
+    width: 220px; //45px
+    padding: 5px 10px;
+    align-items: center;
+    justify-content: left;
+`;
+
+const SearchIcon = styled(motion.button)`
+  margin-right:5px;
+  background: transparent;
+  color:${props => props.theme.white.lighter};
+  padding:0;
+  border:0;
+  cursor:pointer;
+`;
+
 const SearchInput = styled(motion.input)`
-  width:190px;
+  width: calc(100% - 29px);
   outline:none;
-  border:1px solid ${(props) => props.theme.white.lighter};
+  border:none;
   background-color: transparent;
-  padding:5px 10px;
   transform-origin: right center;
-  position: absolute;
-  right: 0px;
   color:${(props) => props.theme.white.lighter};
 
   &::placeholder{
     color:${(props) => props.theme.white.lighter};
   }
-`;
-
-const SearchIcon = styled(motion.span)`
-  position: absolute;
-  left:-30px;
-`;
-
-const SearchForm = styled.form`
-  color:white;
-  display: flex;
-  align-items: center;
-  position: relative;
 `;
 
 const navVariants = {
@@ -114,13 +106,12 @@ const navVariants = {
     }
   }
 }
-
 interface IForm {
   keyword: string,
 }
 
 function Header() {
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(true);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("/tv");
   const movieMatch = useMatch("/movie");
@@ -146,11 +137,9 @@ function Header() {
     scrollY.on("change", () => {
       if (scrollY.get() > 68) {
         navAnimation.start("scroll");
-
       } else {
         navAnimation.start("top");
       }
-
     });
   }, [scrollY, navAnimation]);
 
@@ -161,58 +150,86 @@ function Header() {
     navigate(`search?keyword=${data.keyword}`);
   };
 
+  const logoSVGVar = {
+    start: {
+      pathLength: 0,
+      fill: "rgba(229,9,29,0)",
+      scale: 1.3
+    },
+    end: {
+      pathLength: 1,
+      fill: "rgba(299,9,29,1)",
+      scale: 1,
+      transition: {
+        duration: 1,
+        repeat: Infinity,
+        repeatDelay: 5
+      }
+    },
+    hover: {
+      fill: "rgba(255,255,255,1)",
+      pathLength: 0
+    }
+  }
+
   return (
-    <Navi
+    <PinHeader
       variants={navVariants}
       initial="top"
       animate={navAnimation}
     >
+      <Logo to={"/"}>
+        <Svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 276.742">
+          <motion.path
+            variants={logoSVGVar}
+            initial="start"
+            animate="end"
+            whileHover="hover"
+            d="M140.803 258.904c-15.404 2.705-31.079 3.516-47.294 5.676l-49.458-144.856v151.073c-15.404 1.621-29.457 3.783-44.051 5.945v-276.742h41.08l56.212 157.021v-157.021h43.511v258.904zm85.131-157.558c16.757 0 42.431-.811 57.835-.811v43.24c-19.189 0-41.619 0-57.835.811v64.322c25.405-1.621 50.809-3.785 76.482-4.596v41.617l-119.724 9.461v-255.39h119.724v43.241h-76.482v58.105zm237.284-58.104h-44.862v198.908c-14.594 0-29.188 0-43.239.539v-199.447h-44.862v-43.242h132.965l-.002 43.242zm70.266 55.132h59.187v43.24h-59.187v98.104h-42.433v-239.718h120.808v43.241h-78.375v55.133zm148.641 103.507c24.594.539 49.456 2.434 73.51 3.783v42.701c-38.646-2.434-77.293-4.863-116.75-5.676v-242.689h43.24v201.881zm109.994 49.457c13.783.812 28.377 1.623 42.43 3.242v-254.58h-42.43v251.338zm231.881-251.338l-54.863 131.615 54.863 145.127c-16.217-2.162-32.432-5.135-48.648-7.838l-31.078-79.994-31.617 73.51c-15.678-2.705-30.812-3.516-46.484-5.678l55.672-126.75-50.269-129.992h46.482l28.377 72.699 30.27-72.699h47.295z"
+          ></motion.path>
+        </Svg>
+      </Logo>
 
-      <LeftBox>
-        <Logo to={"/"}>
-          <svg viewBox="0 0 111 30">
-            <path
-              d="M105.06233,14.2806261 L110.999156,30 C109.249227,29.7497422 107.500234,29.4366857 105.718437,29.1554972 L102.374168,20.4686475 L98.9371075,28.4375293 C97.2499766,28.1563408 95.5928391,28.061674 93.9057081,27.8432843 L99.9372012,14.0931671 L94.4680851,-5.68434189e-14 L99.5313525,-5.68434189e-14 L102.593495,7.87421502 L105.874965,-5.68434189e-14 L110.999156,-5.68434189e-14 L105.06233,14.2806261 Z M90.4686475,-5.68434189e-14 L85.8749649,-5.68434189e-14 L85.8749649,27.2499766 C87.3746368,27.3437061 88.9371075,27.4055675 90.4686475,27.5930265 L90.4686475,-5.68434189e-14 Z M81.9055207,26.93692 C77.7186241,26.6557316 73.5307901,26.4064111 69.250164,26.3117443 L69.250164,-5.68434189e-14 L73.9366389,-5.68434189e-14 L73.9366389,21.8745899 C76.6248008,21.9373887 79.3120255,22.1557784 81.9055207,22.2804387 L81.9055207,26.93692 Z M64.2496954,10.6561065 L64.2496954,15.3435186 L57.8442216,15.3435186 L57.8442216,25.9996251 L53.2186709,25.9996251 L53.2186709,-5.68434189e-14 L66.3436123,-5.68434189e-14 L66.3436123,4.68741213 L57.8442216,4.68741213 L57.8442216,10.6561065 L64.2496954,10.6561065 Z M45.3435186,4.68741213 L45.3435186,26.2498828 C43.7810479,26.2498828 42.1876465,26.2498828 40.6561065,26.3117443 L40.6561065,4.68741213 L35.8121661,4.68741213 L35.8121661,-5.68434189e-14 L50.2183897,-5.68434189e-14 L50.2183897,4.68741213 L45.3435186,4.68741213 Z M30.749836,15.5928391 C28.687787,15.5928391 26.2498828,15.5928391 24.4999531,15.6875059 L24.4999531,22.6562939 C27.2499766,22.4678976 30,22.2495079 32.7809542,22.1557784 L32.7809542,26.6557316 L19.812541,27.6876933 L19.812541,-5.68434189e-14 L32.7809542,-5.68434189e-14 L32.7809542,4.68741213 L24.4999531,4.68741213 L24.4999531,10.9991564 C26.3126816,10.9991564 29.0936358,10.9054269 30.749836,10.9054269 L30.749836,15.5928391 Z M4.78114163,12.9684132 L4.78114163,29.3429562 C3.09401069,29.5313525 1.59340144,29.7497422 0,30 L0,-5.68434189e-14 L4.4690224,-5.68434189e-14 L10.562377,17.0315868 L10.562377,-5.68434189e-14 L15.2497891,-5.68434189e-14 L15.2497891,28.061674 C13.5935889,28.3437998 11.906458,28.4375293 10.1246602,28.6868498 L4.78114163,12.9684132 Z"
-            />
-          </svg>
-        </Logo>
-        <MenuList>
-          <MenuItem>
-            <Link to={"/"}>홈</Link>
-            {homeMatch && <Circle layoutId="circle" />}
-          </MenuItem>
-          <MenuItem>
-            <Link to={"movie"}>영화</Link>
-            {movieMatch && <Circle layoutId="circle" />}
-          </MenuItem>
-          <MenuItem>
-            <Link to={"tv"}>TV 프로그램</Link>
-            {tvMatch && <Circle layoutId="circle" />}
-          </MenuItem>
-        </MenuList>
-      </LeftBox>
+      <LeftNav>
+        <Item>
+          <Link to={"/"}>홈</Link>
+          {homeMatch && <Circle layoutId="circle" />}
+        </Item>
+        <Item>
+          <Link to={"movie"}>영화</Link>
+          {movieMatch && <Circle layoutId="circle" />}
+        </Item>
+        <Item>
+          <Link to={"tv"}>TV 프로그램</Link>
+          {tvMatch && <Circle layoutId="circle" />}
+        </Item>
+      </LeftNav>
 
-      <SearchForm onSubmit={handleSubmit(onValid)}>
-        <SearchBtn onClick={toggleSearch}>
+      <RightNav>
+        <SearchForm
+          initial={{ width: 45, border: "1px solid rgba(255,255,255,1)" }}
+          animate={{ width: searchOpen ? 220 : 45, border: searchOpen ? "1px solid rgba(255,255,255,1)" : "1px solid rgba(255,255,255,0)" }}
+          transition={{ type: "linear" }}
+          onSubmit={handleSubmit(onValid)}
+        >
+
           <SearchIcon
-            initial={{ x: 0 }}
-            animate={{ x: searchOpen ? -195 : 0 }}
-            transition={{ type: "linear" }}
+            onClick={toggleSearch}
             className="material-symbols-rounded">
             search
           </SearchIcon>
-        </SearchBtn>
+          <SearchInput
+            {...register("keyword", { required: true, minLength: 2 })}
+            initial={{ width: 100 + "%" }}
+            animate={inputAnimation}
+            transition={{ type: "linear" }}
+            placeholder='제목,배우,감독을 검색해보세요.'
+            autoFocus={true}
+          />
 
-        <SearchInput
-          {...register("keyword", { required: true, minLength: 2 })}
-          initial={{ scaleX: 0 }}
-          animate={inputAnimation}
-          transition={{ type: "linear" }}
-          placeholder='제목,배우,감독을 검색하세요.'
-        />
-      </SearchForm>
-
-    </Navi>
+        </SearchForm>
+      </RightNav>
+    </PinHeader>
   )
 }
 
