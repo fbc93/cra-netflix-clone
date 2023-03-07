@@ -8,7 +8,10 @@ import Router from './Router';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const GlobalStyle = createGlobalStyle`
-html, body, div, span, applet, object, iframe,
+html {
+  font-size:10px;
+}
+body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
@@ -43,6 +46,8 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   color: #ffffff;
   overflow-x:hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 menu, ol, ul {
   list-style: none;

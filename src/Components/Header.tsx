@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 const PinHeader = styled(motion.header)`
   width: 100%;
-  height: 68px;
+  height: 8vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,7 +14,6 @@ const PinHeader = styled(motion.header)`
   z-index: 1;
   top:0;
   padding: 0 4%;
-  font-size:14px;
 `;
 
 const Logo = styled(motion(Link))`
@@ -49,6 +48,7 @@ const Item = styled.li`
   a {
     color:${(props) => props.theme.white.darker};
     transition: color 0.3s ease-in-out;
+    font-size:1.4rem;
   }
 `;
 
@@ -193,7 +193,7 @@ function Header() {
 
       <LeftNav>
         <Item>
-          <Link to={"/"}>홈</Link>
+          <Link to={"/"}>오늘의 트렌드</Link>
           {homeMatch && <Circle layoutId="circle" />}
         </Item>
         <Item>

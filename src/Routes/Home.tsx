@@ -1,19 +1,11 @@
 import { AnimatePresence, motion, useScroll } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { useMatch, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { getTrending, IMovie } from "../api";
+import { Link, useMatch, useNavigate } from "react-router-dom";
+import { getTrending, getTvGenre, IMovie } from "../api";
 import { makeImagePath } from "../utils";
+import styled from "styled-components";
 import ReactPlayer from 'react-player/lazy';
-
-const MainView = styled(motion.main)`
-  width:100%;
-  min-height: 1000px;
-  margin-top:-68px;
-  position: relative;
-  z-index: 0;
-`;
 
 const Loader = styled.div`
   height: 20vh;
@@ -22,26 +14,32 @@ const Loader = styled.div`
   align-items: center;
 `;
 
-const VisualBanner = styled.div<{ bgphoto: string }>`
-  height: 56.25vw;
+const MainView = styled(motion.main)`
+  width:100%;
+  height: auto;
+  position: relative;
+  z-index: 0;
+`;
+
+const VisualBanner = styled.section<{ bgImage: string }>`
+  height: 45vw;
   padding-top:68px;
-  background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,1)) ,url( ${props => props.bgphoto});
+  background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,1)) ,url( ${props => props.bgImage});
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   position: relative;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
 `;
 
-const InfoWrap = styled.div`
+const TitleBox = styled.div`
   width: 35%;
   margin: 0 0 0 4%;
 `;
 
-const Title = styled.h2`
+const Title = styled(motion.h2)`
   font-size:4vw;
   letter-spacing: -1px;
   margin-bottom:30px;
@@ -55,7 +53,36 @@ const OriginalTitle = styled.span`
   margin-left:1.2vw;
 `;
 
-const Overview = styled.p`
+const GenreTagList = styled(motion.ul)`
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom:25px;
+`;
+
+const GenreTag = styled.li`
+  font-size:1.2vw;
+  color: ${props => props.theme.white.darker};
+  position: relative;
+  letter-spacing: -1px;
+  
+  &:after{
+    width:1.4vw;
+    content:'/';
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+  }
+
+  &:last-child{
+    &:after{
+      display: none;
+    }
+  }
+`;
+
+const Overview = styled(motion.p)`
   font-size: 1.2vw;
   letter-spacing: -1px;
   line-height: 1.7;
@@ -67,14 +94,14 @@ const Overview = styled.p`
   -webkit-box-orient: vertical;
 `;
 
-const InfoBtnWrap = styled.div`
+const BtnList = styled(motion.ul)`
   display: flex;
   align-items: center;
   margin-top:30px;
   width:100%;
 `;
 
-const PlayBtn = styled.button`
+const TrailerPlayBtn = styled.button`
   display: flex;
   -webkit-box-align: center;
   align-items: center;
@@ -93,7 +120,7 @@ const PlayBtn = styled.button`
   cursor:pointer;
 
   .material-symbols-rounded {
-    font-size:2vw;
+    font-size:2.5vw;
     margin-right:1vw;
   }
 
@@ -102,7 +129,7 @@ const PlayBtn = styled.button`
   }
 `;
 
-const InfoBtn = styled.button`
+const DescInfoBtn = styled.button`
   display: flex;
   -webkit-box-align: center;
   align-items: center;
@@ -130,15 +157,52 @@ const InfoBtn = styled.button`
   }
 `;
 
+const Slider = styled(motion.section)`
+  margin: 3vw 0px;
+  position: relative;
 
+  &:hover{
+    span{
+      opacity:1;
+      right:-1vw;
+    }
+  }
+`;
 
+const SliderTitle = styled(motion(Link))`
+  padding:0 0 0 4vw;
+  margin-bottom:2.5vh;
+  font-size:1.6vw;
+  letter-spacing: -1px;
+  font-weight: 500;
+  display: inline-block;
+  display: flex;
+  align-items: center;
 
-const Slider = styled(motion.div)``;
+  span {
+    display: inline-block;
+    margin-left:0.6vw;
+    color: rgb(84, 185, 197);
+    opacity:0;
+    transition: all ease-in-out 0.5s;
+    position: relative;
+    right:1vw;
+    font-size:1.4vw;
+  }
+`;
 
-const Row = styled(motion.div)`
+const ViewAll = styled.div`
+  display:flex;
+  align-items: center;
+`;
+
+const SlideRow = styled(motion.div)`
+  padding:0 4vw 0 4vw;
   display: grid;
-  gap:5px;
+  gap:10px;
   grid-template-columns: repeat(6,1fr);
+  justify-content: space-between;
+  position: absolute;
   width:100%;
 `;
 
@@ -146,11 +210,12 @@ const Box = styled(motion.div) <{ bgphoto: string }>`
   cursor:pointer;
   background-color: #ffffff;
   background-image: url(${props => props.bgphoto});
-  height: 100px;
+  aspect-ratio: 2/3;
   font-size:60px;
-  background-position: center;
+  background-position: top;
   background-size: cover;
   background-repeat: no-repeat;
+  border-radius: 5px;
 
   &:first-child {
     transform-origin: center left;
@@ -213,10 +278,6 @@ const BigOverview = styled.p`
   line-height: 1.5;
 `;
 
-const TrailerMovie = styled.div`
-  width:100px;
-`;
-
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -256,13 +317,6 @@ const infoVariants = {
 }
 
 function Home() {
-  const { data, isLoading } = useQuery(
-    "Trend",
-    getTrending
-  );
-
-  console.log(data?.results)
-
   const bigMovieMatch = useMatch("/trending/:trendId");
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
@@ -270,11 +324,43 @@ function Home() {
   const { scrollY } = useScroll();
   const offset = 6;
 
+  const { data: trendData, isLoading: trendLoading } = useQuery(
+    "trend",
+    getTrending
+  );
+
+  const { data: TvGenreData } = useQuery(
+    "tvGenre",
+    getTvGenre
+  )
+
+  const changeGenreIdtoName = (genreArray: any) => {
+    const genre = [];
+    const result = [];
+
+    if (genreArray !== undefined) {
+      for (let i = 0; i < genreArray.length; i++) {
+        genre.push(genreArray[i]);
+
+        for (let j = 0; j < genre.length; j++) {
+          for (let k = 0; k < TvGenreData?.genres.length; k++) {
+
+            if (genre[j] === TvGenreData?.genres[k].id) {
+              genre[j] = TvGenreData?.genres[k].name;
+              result.push(genre[j]);
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+
   const increaseIndex = () => {
-    if (data) {
+    if (trendData) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1;
+      const totalMovies = trendData.results.length - 1;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => prev === maxIndex ? 0 : prev + 1);
     }
@@ -290,57 +376,97 @@ function Home() {
 
   const clickedMovie =
     bigMovieMatch?.params.trendId &&
-    data?.results.find((movie: IMovie) => movie.id + "" === bigMovieMatch.params.trendId);
-
-
+    trendData?.results.find((movie: IMovie) => movie.id + "" === bigMovieMatch.params.trendId);
 
   return (
+
     <MainView
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{
-        duration: 0.5
-      }}
+      transition={{ duration: 0.5 }}
     >
-      {isLoading ?
+      {trendLoading ?
         <Loader>Loading...</Loader> :
         <>
-          <VisualBanner onClick={increaseIndex} bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}>
-            <InfoWrap>
-              <Title>
-                {data?.results[0].title ? data?.results[0].title : data?.results[0].name}
+          <VisualBanner onClick={increaseIndex} bgImage={makeImagePath(trendData?.results[0].backdrop_path || "")}>
+            <TitleBox>
 
+              <Title
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.4,
+                  duration: 1
+                }}
+              >
+                {trendData?.results[0].title ? trendData?.results[0].title : trendData?.results[0].name}
                 <OriginalTitle>
-                  {data?.results[0].original_name}
+                  {trendData?.results[0].original_name}
                 </OriginalTitle>
-
               </Title>
-              <Overview>{data?.results[0].overview}</Overview>
 
-              <InfoBtnWrap>
-                <PlayBtn>
+              <GenreTagList
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.8,
+                  duration: 1
+                }}
+              >
+                {
+                  changeGenreIdtoName(trendData?.results[0].genre_ids).map((item: any) =>
+                    <GenreTag key={item}>{item}</GenreTag>
+                  )
+                }
+              </GenreTagList>
+
+              <Overview
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 1.2,
+                  duration: 1
+                }}
+              >{trendData?.results[0].overview}</Overview>
+
+              <BtnList
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 1.6,
+                  duration: 1
+                }}
+              >
+                <TrailerPlayBtn>
                   <span className="material-symbols-rounded">
                     play_arrow
                   </span>
                   <span>재생</span>
-                </PlayBtn>
-                <InfoBtn>
+                </TrailerPlayBtn>
+                <DescInfoBtn>
                   <span className="material-symbols-rounded">
                     info
                   </span>
                   <span>상세정보</span>
-                </InfoBtn>
-              </InfoBtnWrap>
+                </DescInfoBtn>
+              </BtnList>
 
-            </InfoWrap>
+            </TitleBox>
           </VisualBanner>
 
           <Slider>
-            <h1>오늘하루 인기있었던 영화/TV프로그램</h1>
+            <SliderTitle to={"/"}>
+              🏆 오늘 하루 인기있었던 영화 / TV프로그램
+              <ViewAll>
+                <span>모두보기</span>
+                <span className="material-symbols-rounded">arrow_forward_ios</span>
+              </ViewAll>
+            </SliderTitle>
             <AnimatePresence
               initial={false}
               onExitComplete={toggleLeaving}>
-              <Row
+
+              <SlideRow
                 key={index}
                 variants={rowVariants}
                 initial="hidden"
@@ -348,7 +474,7 @@ function Home() {
                 exit="exit"
                 transition={{ type: "tween", duration: 1 }}
               >
-                {data?.results
+                {trendData?.results
                   .slice(1)
                   .slice(offset * index, offset * index + offset)
                   .map((movie: IMovie) => (
@@ -369,7 +495,8 @@ function Home() {
                       </Info>
                     </Box>
                   ))}
-              </Row>
+              </SlideRow>
+
             </AnimatePresence>
           </Slider>
 
@@ -389,7 +516,7 @@ function Home() {
                     <>
                       <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
                       <BigTitle>{clickedMovie.title ? clickedMovie.title : clickedMovie.name}</BigTitle>
-                      <TrailerMovie>
+                      {/* <TrailerMovie>
                         <ReactPlayer
                           url={'https://youtu.be/9dsN9bTyq0g'}
                           width='100%'
@@ -400,7 +527,7 @@ function Home() {
                           autoPlay={true}
                           loop={true}
                         />
-                      </TrailerMovie>
+                      </TrailerMovie> */}
                       <BigOverview>{clickedMovie.overview}</BigOverview>
                     </>
                   }

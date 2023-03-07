@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
-const ContentInfo = styled.footer``;
+const ContentInfo = styled.footer`
+  position: fixed;
+  bottom:0;
+  width:100%;
+`;
 
 function Footer() {
   return (
