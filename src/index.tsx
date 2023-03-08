@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 const GlobalStyle = createGlobalStyle`
 html {
   font-size:10px;
+  overflow-x:hidden
 }
 body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,

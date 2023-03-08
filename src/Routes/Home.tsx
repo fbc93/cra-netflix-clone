@@ -6,6 +6,7 @@ import { getTrending, getTvGenre, IMovie } from "../api";
 import { makeImagePath } from "../utils";
 import styled from "styled-components";
 import ReactPlayer from 'react-player/lazy';
+import useWindowDimensions from "../useWidowDimensions";
 
 const Loader = styled.div`
   height: 20vh;
@@ -158,8 +159,9 @@ const DescInfoBtn = styled.button`
 `;
 
 const Slider = styled(motion.section)`
-  margin: 3vw 0px;
+  margin: 0px 0px 3vw;
   position: relative;
+  aspect-ratio: 7.7/2;
 
   &:hover{
     span{
@@ -197,10 +199,10 @@ const ViewAll = styled.div`
 `;
 
 const SlideRow = styled(motion.div)`
-  padding:0 4vw 0 4vw;
   display: grid;
   gap:10px;
   grid-template-columns: repeat(6,1fr);
+  //padding:0 0 0 4vw;
   justify-content: space-between;
   position: absolute;
   width:100%;
@@ -278,17 +280,17 @@ const BigOverview = styled.p`
   line-height: 1.5;
 `;
 
-const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 5,
-  },
-  visible: {
-    x: 0
-  },
-  exit: {
-    x: -window.outerWidth - 5
-  }
-}
+// const rowVariants = {
+//   hidden: {
+//     x: window.outerWidth + 5,
+//   },
+//   visible: {
+//     x: 0,
+//   },
+//   exit: {
+//     x: -window.outerWidth - 5,
+//   },
+// }
 
 const BoxVariant = {
   normal: {
@@ -316,13 +318,16 @@ const infoVariants = {
   }
 }
 
+const offset = 6;
+
 function Home() {
   const bigMovieMatch = useMatch("/trending/:trendId");
   const navigate = useNavigate();
+  const { scrollY } = useScroll();
+
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const { scrollY } = useScroll();
-  const offset = 6;
+  const [prev, setPrev] = useState(false);
 
   const { data: trendData, isLoading: trendLoading } = useQuery(
     "trend",
@@ -367,6 +372,7 @@ function Home() {
   };
 
   const toggleLeaving = () => setLeaving(prev => !prev);
+  const goPrev = () => setPrev(prev => !prev);
 
   const onBoxClicked = (movieId: number) => {
     navigate(`/trending/${movieId}`);
@@ -378,6 +384,8 @@ function Home() {
     bigMovieMatch?.params.trendId &&
     trendData?.results.find((movie: IMovie) => movie.id + "" === bigMovieMatch.params.trendId);
 
+  const width = useWindowDimensions();
+
   return (
 
     <MainView
@@ -388,7 +396,7 @@ function Home() {
       {trendLoading ?
         <Loader>Loading...</Loader> :
         <>
-          <VisualBanner onClick={increaseIndex} bgImage={makeImagePath(trendData?.results[0].backdrop_path || "")}>
+          <VisualBanner bgImage={makeImagePath(trendData?.results[0].backdrop_path || "")}>
             <TitleBox>
 
               <Title
@@ -462,16 +470,18 @@ function Home() {
                 <span className="material-symbols-rounded">arrow_forward_ios</span>
               </ViewAll>
             </SliderTitle>
+
+            <span className="material-symbols-rounded" onClick={goPrev} style={{ position: "absolute", zIndex: 2, top: 55 + "%", left: 1.4 + "vw", cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_back_ios</span>
+            <span className="material-symbols-rounded" onClick={increaseIndex} style={{ position: "absolute", zIndex: 2, top: 55 + "%", right: 0.4 + "vw", cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_forward_ios</span>
+
             <AnimatePresence
               initial={false}
               onExitComplete={toggleLeaving}>
-
               <SlideRow
                 key={index}
-                variants={rowVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
+                initial={{ x: width + 5 }}
+                animate={{ x: 0 }}
+                exit={{ x: -width - 5 }}
                 transition={{ type: "tween", duration: 1 }}
               >
                 {trendData?.results
