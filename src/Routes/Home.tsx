@@ -159,9 +159,9 @@ const DescInfoBtn = styled.button`
 `;
 
 const Slider = styled(motion.section)`
-  margin: 0px 0px 3vw;
+  margin: 0px 4vw 3vw;
   position: relative;
-  aspect-ratio: 7.7/2;
+  aspect-ratio: 7/2;
 
   &:hover{
     span{
@@ -172,7 +172,6 @@ const Slider = styled(motion.section)`
 `;
 
 const SliderTitle = styled(motion(Link))`
-  padding:0 0 0 4vw;
   margin-bottom:2.5vh;
   font-size:1.6vw;
   letter-spacing: -1px;
@@ -217,7 +216,8 @@ const Box = styled(motion.div) <{ bgphoto: string }>`
   background-position: top;
   background-size: cover;
   background-repeat: no-repeat;
-  border-radius: 5px;
+  border-radius: 0.5vw;
+  overflow: hidden;
 
   &:first-child {
     transform-origin: center left;
@@ -294,7 +294,7 @@ const BigOverview = styled.p`
 
 const BoxVariant = {
   normal: {
-    scale: 1
+    scale: 1,
   },
   hover: {
     scale: 1.2,
@@ -327,7 +327,9 @@ function Home() {
 
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const [prev, setPrev] = useState(false);
+
+
+
 
   const { data: trendData, isLoading: trendLoading } = useQuery(
     "trend",
@@ -361,18 +363,34 @@ function Home() {
     return result;
   }
 
-  const increaseIndex = () => {
+  const toggleLeaving = () => setLeaving(prev => !prev);
+
+  const [isRight, setIsRight] = useState(1);
+
+
+  const changeIndex = (right: number) => {
+    if (leaving) return;
+
     if (trendData) {
-      if (leaving) return;
       toggleLeaving();
-      const totalMovies = trendData.results.length - 1;
-      const maxIndex = Math.floor(totalMovies / offset) - 1;
-      setIndex((prev) => prev === maxIndex ? 0 : prev + 1);
+      setIsRight(right);
+      const totalLength = trendData.results.length;
+
+      const maxIndex =
+        totalLength % offset === 0
+          ? Math.floor(totalLength / offset)
+          : Math.floor(totalLength / offset) - 1
+
+
+      right === 1
+        ? setIndex((prev) => prev >= maxIndex ? 0 : prev + 1)
+        : setIndex((prev) => prev === 0 ? maxIndex : prev - 1)
     }
   };
 
-  const toggleLeaving = () => setLeaving(prev => !prev);
-  const goPrev = () => setPrev(prev => !prev);
+
+
+
 
   const onBoxClicked = (movieId: number) => {
     navigate(`/trending/${movieId}`);
@@ -385,6 +403,45 @@ function Home() {
     trendData?.results.find((movie: IMovie) => movie.id + "" === bigMovieMatch.params.trendId);
 
   const width = useWindowDimensions();
+
+  const onClickToArrowBtn = (right: number) => {
+    if (!leaving) {
+      changeIndex(right);
+    }
+  };
+
+
+
+
+  const rowVariants = {
+    hidden: (right: number) => {
+      return {
+        x: right === 1 ? width + 5 : -width - 5,
+      };
+    },
+    visible: {
+      x: 0
+    },
+    exit: (right: number) => {
+      return {
+        x: right === 1 ? -width - 5 : width + 5,
+      };
+    },
+  };
+
+  const rowProps = {
+    custom: isRight,
+    variants: rowVariants,
+    initial: "hidden",
+    animate: "visible",
+    exit: "exit",
+    transition: {
+      type: "tween",
+      duration: 1
+    },
+    key: index,
+  }
+
 
   return (
 
@@ -471,18 +528,17 @@ function Home() {
               </ViewAll>
             </SliderTitle>
 
-            <span className="material-symbols-rounded" onClick={goPrev} style={{ position: "absolute", zIndex: 2, top: 55 + "%", left: 1.4 + "vw", cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_back_ios</span>
-            <span className="material-symbols-rounded" onClick={increaseIndex} style={{ position: "absolute", zIndex: 2, top: 55 + "%", right: 0.4 + "vw", cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_forward_ios</span>
+            <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(-1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", left: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_back_ios</span>
+            <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", right: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_forward_ios</span>
 
             <AnimatePresence
               initial={false}
+              custom={isRight}
               onExitComplete={toggleLeaving}>
+
+
               <SlideRow
-                key={index}
-                initial={{ x: width + 5 }}
-                animate={{ x: 0 }}
-                exit={{ x: -width - 5 }}
-                transition={{ type: "tween", duration: 1 }}
+                {...rowProps}
               >
                 {trendData?.results
                   .slice(1)
