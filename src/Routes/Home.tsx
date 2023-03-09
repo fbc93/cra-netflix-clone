@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { getTrending, getTvGenre, IData, IGenre, IGetGenres, IGetTrend } from "../api";
+import { getMovieGenre, getTrending, getTvGenre, IData, IGenre, IGetGenres, IGetTrend, IGetTvDetail } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
 import Slider from "../Components/Slider";
-import Modal from "../Components/Modal";
 
 const Loader = styled.div`
   height: 20vh;
@@ -32,6 +31,11 @@ function Home() {
     getTvGenre
   );
 
+  const { data: MovieGenreData } = useQuery<IGetGenres>(
+    "movieGenre",
+    getMovieGenre
+  );
+
   return (
     <MainView
       initial={{ opacity: 0 }}
@@ -44,9 +48,9 @@ function Home() {
           <VisualBanner
             trendData={trendData?.results as IData[]}
             TvGenreData={TvGenreData?.genres as IGenre[]}
+            MovieGenreData={MovieGenreData?.genres as IGenre[]}
           />
           <Slider trendData={trendData?.results as IData[]} />
-          <Modal trendData={trendData?.results as IData[]} />
         </>
       }
     </MainView >

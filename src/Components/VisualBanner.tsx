@@ -141,33 +141,45 @@ const DescInfoBtn = styled.button`
 
 function VisualBanner({
   trendData,
-  TvGenreData
+  TvGenreData,
+  MovieGenreData
 }: {
   trendData: IData[],
-  TvGenreData: IGenre[]
+  TvGenreData: IGenre[],
+  MovieGenreData: IGenre[]
 
 }) {
-  // const changeGenreIdtoName = (genreArray: any) => {
-  //   const genre = [];
-  //   const result = [];
+  const convertGenreIdToNm = (genreArray: number[]) => {
+    const genre = [];
+    const result = [];
 
-  //   if (genreArray !== undefined) {
-  //     for (let i = 0; i < genreArray.length; i++) {
-  //       genre.push(genreArray[i]);
+    if (genreArray !== undefined) {
+      for (let i = 0; i < genreArray.length; i++) {
+        genre.push(genreArray[i]);
 
-  //       for (let j = 0; j < genre.length; j++) {
-  //         for (let k = 0; k < TvGenreData.length; k++) {
+        for (let j = 0; j < genre.length; j++) {
 
-  //           if (genre[j] === TvGenreData[k].id) {
-  //             genre[j] = TvGenreData[k].name;
-  //             result.push(genre[j]);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //   return result;
-  // }
+          if (trendData[0].media_type as any === "tv") {
+            for (let k = 0; k < TvGenreData?.length; k++) {
+              if (genre[j] === TvGenreData[k].id) {
+                genre[j] = TvGenreData[k].name;
+                result.push(genre[j]);
+              }
+            }
+
+          } else if (trendData[0].media_type as any === "movie") {
+            for (let k = 0; k < MovieGenreData?.length; k++) {
+              if (genre[j] === MovieGenreData[k].id) {
+                genre[j] = MovieGenreData[k].name;
+                result.push(genre[j]);
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
 
   return (
     <Banner bgImage={makeImagePath(trendData[0].backdrop_path || "")}>
@@ -195,11 +207,11 @@ function VisualBanner({
             duration: 1
           }}
         >
-          {/* {
-            changeGenreIdtoName(trendData[0].genre_ids).map((item: any) =>
+          {
+            convertGenreIdToNm(trendData[0].genre_ids).map((item: any) =>
               <GenreTag key={item}>{item}</GenreTag>
             )
-          } */}
+          }
         </GenreTagList>
 
         <Overview

@@ -15,7 +15,7 @@ const Router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: "trending/:trendId",
+        path: "trending/:movType/:trendId",
         element: <Home />
       },
       {

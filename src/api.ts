@@ -1,29 +1,23 @@
-// export interface IMovie {
-//   adult: boolean,
-//   backdrop_path: string,
-//   genre_ids: [],
-//   id: number,
-//   original_title: string,
-//   overview: string,
-//   popularity: number,
-//   poster_path: string,
-//   release_date: string,
-//   title: string,
-//   name: string,
-//   video: boolean,
-//   vote_average: number,
-//   vote_count: number,
-// }
-// export interface IGetMoviesResult {
-//   dates: {
-//     maximum: string,
-//     minimum: string
-//   },
-//   page: number,
-//   results: [],
-//   total_pages: number,
-//   total_results: number
-// }
+export interface IGetTvDetail {
+  id: number;
+  name: string;
+  original_name: string;
+  genres: IGenre[];
+  adult: boolean;
+  backdrop_path: string;
+  poster_path: string;
+  overview: string;
+  created_by: [];
+  episode_run_time: number[];
+  number_of_episodes: number;
+  number_of_seasons: number;
+  first_air_date: string;
+  networks: [];
+  production_companies: [];
+  production_countries: [];
+  seasons: [];
+}
+
 export interface IGenre {
   id: number;
   name: string;
@@ -42,6 +36,7 @@ export interface IData {
   original_name: string;
   original_title: string;
   genre_ids: [];
+  media_type: "";
 }
 
 export interface IGetTrend {
@@ -101,13 +96,19 @@ export function getTrending() {
 
 //Get Movie [Genre List] 
 export function getMovieGenre() {
-  return fetch(`${BASE_PATH}/genre/movie/list${LAST_STRING}`)
+  return fetch(`${BASE_PATH}/genre/movie/list?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
     .then((res) => res.json());
 }
 
 //Get TV [Genre List] 
 export function getTvGenre() {
   return fetch(`${BASE_PATH}/genre/tv/list?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
+    .then((res) => res.json());
+}
+
+//Get Details [Movie/TV]
+export function getDetail(DATA_TYPE: string, DATA_ID: number) {
+  return fetch(`${BASE_PATH}/${DATA_TYPE}/${DATA_ID}?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
     .then((res) => res.json());
 }
 
@@ -119,7 +120,7 @@ export function getMovie() {
 
 //Get Top Rated [Movies]
 export function getTopRatedMovies() {
-  return fetch(`${BASE_PATH}/movie/top_rated${LAST_STRING}`)
+  return fetch(`${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
     .then((res) => res.json());
 }
 

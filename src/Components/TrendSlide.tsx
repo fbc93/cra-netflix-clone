@@ -1,11 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { Link, useMatch, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IData } from "../api";
+import { IData, IGetTrend } from "../api";
 import useWindowDimensions from "../useWidowDimensions";
 import { makeImagePath } from "../utils";
-import Modal from "./Modal";
 
 
 const Wrapper = styled(motion.section)`
@@ -57,10 +56,10 @@ const SlideRow = styled(motion.div)`
   width:100%;
 `;
 
-const Box = styled(motion.div) <{ background: string }>`
+const Box = styled(motion.div) <{ bgphoto: string }>`
   cursor:pointer;
   background-color: #ffffff;
-  background-image: url(${props => props.background});
+  background-image: url(${props => props.bgphoto});
   aspect-ratio: 2/3;
   font-size:60px;
   background-position: top;
@@ -117,10 +116,13 @@ const infoVariants = {
   }
 }
 
-function Slider({
-  trendData
+
+function TrendSlider({
+  trendData,
+  TopRatedMovieData
 }: {
-  trendData: IData[]
+  trendData: IData[],
+  TopRatedMovieData: IData[]
 }) {
   const offset = 6;
   const [index, setIndex] = useState(0);
@@ -129,7 +131,6 @@ function Slider({
   const [isRight, setIsRight] = useState(1);
   const navigate = useNavigate();
   const width = useWindowDimensions();
-  const bigMovieMatch = useMatch("/trending/:movType/:trendId");
 
   const changeIndex = (right: number) => {
     if (leaving) return;
@@ -155,8 +156,8 @@ function Slider({
     }
   };
 
-  const onBoxClicked = (movieId: number, media_type: string) => {
-    navigate(`/trending/${media_type}/${movieId}`);
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/trending/${movieId}`);
   };
 
   const rowVariants = {
@@ -188,60 +189,57 @@ function Slider({
     key: index,
   }
 
+  console.log(TopRatedMovieData?.slice(1, 2))
+
   return (
-    <Wrapper>
-      <SliderTitle to={"/"}>
-        🏆 오늘 하루 인기있었던 영화 / TV프로그램
-        <ViewAll>
-          <span>모두보기</span>
-          <span className="material-symbols-rounded">arrow_forward_ios</span>
-        </ViewAll>
-      </SliderTitle>
+    <>
+      <Wrapper>
+        <SliderTitle to={"/"}>
+          🏆 오늘 하루 인기있었던 영화 / TV프로그램
+          <ViewAll>
+            <span>모두보기</span>
+            <span className="material-symbols-rounded">arrow_forward_ios</span>
+          </ViewAll>
+        </SliderTitle>
 
-      <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(-1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", left: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_back_ios</span>
-      <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", right: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_forward_ios</span>
+        <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(-1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", left: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_back_ios</span>
+        <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", right: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_forward_ios</span>
 
-      <AnimatePresence
-        initial={false}
-        custom={isRight}
-        onExitComplete={toggleLeaving}>
-        <SlideRow
-          {...rowProps}
-        >
-          {trendData
-            .slice(1)
-            .slice(offset * index, offset * index + offset)
-            .map((movie: IData) => (
-              <Box
-                layoutId={movie.id + ""}
-                key={movie.id}
-                onClick={() => onBoxClicked(movie.id, movie.media_type)}
-                background={makeImagePath(movie.poster_path, "w500")}
-                variants={BoxVariant}
-                initial="normal"
-                whileHover="hover"
-                transition={{
-                  type: "tween"
-                }}
-              >
-                <Info variants={infoVariants}>
-                  <h4>{movie.name ? movie.name : movie.title}</h4>
-                </Info>
-              </Box>
-            ))}
-        </SlideRow>
-      </AnimatePresence>
-      <AnimatePresence>
-        {bigMovieMatch ? (
-          <Modal
-            trendData={trendData}
-            dataId={Number(bigMovieMatch?.params.trendId)}
-            movType={String(bigMovieMatch?.params.movType)}
-          />
-        ) : null}
-      </AnimatePresence>
-    </Wrapper>
+        <AnimatePresence
+          initial={false}
+          custom={isRight}
+          onExitComplete={toggleLeaving}>
+
+          <SlideRow
+            {...rowProps}
+          >
+            {trendData
+              .slice(1)
+              .slice(offset * index, offset * index + offset)
+              .map((movie: IData) => (
+                <Box
+                  layoutId={movie.id + ""}
+                  key={movie.id}
+                  onClick={() => onBoxClicked(movie.id)}
+                  bgphoto={makeImagePath(movie.poster_path, "w500")}
+                  variants={BoxVariant}
+                  initial="normal"
+                  whileHover="hover"
+                  transition={{
+                    type: "tween"
+                  }}
+                >
+                  <Info variants={infoVariants}>
+                    <h4>{movie.name ? movie.name : movie.title}</h4>
+                  </Info>
+                </Box>
+              ))}
+          </SlideRow>
+
+        </AnimatePresence>
+      </Wrapper>
+    </>
   );
 }
 
-export default Slider;
+export default TrendSlider;
