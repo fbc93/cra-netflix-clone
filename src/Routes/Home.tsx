@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { getMovieGenre, getTrending, getTvGenre, IData, IGenre, IGetGenres, IGetTrend, IGetTvDetail } from "../api";
+import { getMovieGenre, getTrending, getTvGenre, getUpcomingMovies, IData, IGenre, IGetGenres, IGetTrend, IGetTvDetail } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
 import Slider from "../Components/Slider";
@@ -35,6 +35,11 @@ function Home() {
     "movieGenre",
     getMovieGenre
   );
+
+  const { data: upcomingMovieData } = useQuery(
+    "upcomingMovie",
+    getUpcomingMovies
+  )
 
 
   return (

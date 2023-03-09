@@ -1,3 +1,13 @@
+export interface IrowProps {
+  custom: boolean;
+  variants: {};
+  initial: string;
+  animate: string;
+  exit: string;
+  transition: {};
+  key: number;
+}
+
 export interface Iparam {
   movType: string;
   trendId: string;
