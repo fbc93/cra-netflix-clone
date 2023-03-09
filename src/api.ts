@@ -1,3 +1,27 @@
+export interface IDates {
+  maximum: string;
+  minimum: string;
+}
+export interface IGetUpcomingMovie {
+  poster_path: string;
+  overview: string;
+  release_date: string;
+  genre_ids: [];
+  id: number;
+  original_title: string;
+  original_language: string;
+  title: string;
+  backdrop_path: string;
+  vote_average: number;
+  media_type: string;
+}
+
+export interface IGetUpcomingMovies {
+  dates: IDates[];
+  results: IGetUpcomingMovie[];
+}
+
+
 export interface IrowProps {
   custom: boolean;
   variants: {};
@@ -202,7 +226,7 @@ export function getTopRatedMovies() {
 
 //Get Upcoming [Movies]
 export function getUpcomingMovies() {
-  return fetch(`${BASE_PATH}/movie/upcoming${LAST_STRING}`)
+  return fetch(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
     .then((res) => res.json());
 }
 

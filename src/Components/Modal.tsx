@@ -33,10 +33,14 @@ function Modal({
     () => getDetail(movType, dataId)
   );
 
+
+
   const navigate = useNavigate();
   const bigMovieMatch = useMatch("/trending/:movType/:trendId");
   const onOverlayClicked = () => navigate("/");
   const clickedMovie = Number(DetailData?.id) === Number(bigMovieMatch?.params.trendId) ? DetailData : null;
+
+
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { getMovieGenre, getTrending, getTvGenre, getUpcomingMovies, IData, IGenre, IGetGenres, IGetTrend, IGetTvDetail } from "../api";
+import { getMovieGenre, getTrending, getTvGenre, getUpcomingMovies, IData, IGenre, IGetGenres, IGetTrend, IGetUpcomingMovie, IGetUpcomingMovies } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
 import Slider from "../Components/Slider";
@@ -36,10 +36,11 @@ function Home() {
     getMovieGenre
   );
 
-  const { data: upcomingMovieData } = useQuery(
+  const { data: upcomingMovieData } = useQuery<IGetUpcomingMovies>(
     "upcomingMovie",
     getUpcomingMovies
-  )
+  );
+
 
 
   return (
@@ -56,7 +57,10 @@ function Home() {
             TvGenreData={TvGenreData?.genres as IGenre[]}
             MovieGenreData={MovieGenreData?.genres as IGenre[]}
           />
-          <Slider trendData={trendData?.results as IData[]} />
+          <Slider
+            trendData={trendData?.results as IData[]}
+            upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
+          />
 
         </>
       }

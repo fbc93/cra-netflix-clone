@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IData } from "../../api";
+import { IGetUpcomingMovie } from "../../api";
 import useWindowDimensions from "../../useWidowDimensions";
 import { makeImagePath } from "../../utils";
 import Modal from "../Modal";
@@ -116,32 +116,28 @@ const infoVariants = {
   }
 }
 
-function TrendSlider({
-  trendData,
 
-
+function UpcomingMovieSlider({
+  upcomingData,
 }: {
-  trendData: IData[],
+  upcomingData: IGetUpcomingMovie[]
 
 }) {
-
-
-
   const offset = 6;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const toggleLeaving = () => setLeaving(prev => !prev);
   const [isRight, setIsRight] = useState(1);
   const navigate = useNavigate();
+  const toggleLeaving = () => setLeaving(prev => !prev);
   const width = useWindowDimensions();
-  const bigMovieMatch = useMatch("/trending/:movType/:trendId");
+  const bigMovieMatch = useMatch("/upcoming/:movType/:upcomingId");
 
   const changeIndex = (right: number) => {
     if (leaving) return;
-    if (trendData) {
+    if (upcomingData) {
       toggleLeaving();
       setIsRight(right);
-      const totalLength = Object.keys(trendData).length;
+      const totalLength = Object.keys(upcomingData).length;
 
       const maxIndex =
         totalLength % offset === 0
@@ -160,9 +156,6 @@ function TrendSlider({
     }
   };
 
-  const onBoxClicked = (movieId: number, media_type: string) => {
-    navigate(`/trending/${media_type}/${movieId}`);
-  };
 
   const rowVariants = {
     hidden: (right: number) => {
@@ -180,6 +173,9 @@ function TrendSlider({
     },
   };
 
+  const onBoxClicked = (trendId: number, media_type: string) => {
+    navigate(`/trending/${media_type}/${trendId}`);
+  };
 
   const rowProps = {
     custom: isRight,
@@ -199,7 +195,7 @@ function TrendSlider({
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
-        🏆 오늘 하루 인기있었던 영화 / TV프로그램
+        🎉 Upcoming Movie, 개봉 예정작
         <ViewAll>
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>
@@ -216,39 +212,44 @@ function TrendSlider({
         <SlideRow
           {...rowProps}
         >
-          {trendData
-            .slice(1)
-            .slice(offset * index, offset * index + offset)
-            .map((movie: IData) => (
-              <Box
-                layoutId={movie.id + ""}
-                key={movie.id}
-                onClick={() => onBoxClicked(movie.id, movie.media_type)}
-                background={makeImagePath(movie.poster_path, "w500")}
-                variants={BoxVariant}
-                initial="normal"
-                whileHover="hover"
-                transition={{
-                  type: "tween"
-                }}
-              >
-                <Info variants={infoVariants}>
-                  <h4>{movie.name ? movie.name : movie.title}</h4>
-                </Info>
-              </Box>
-            ))}
+          {upcomingData?.slice(1).slice(offset * index, offset * index + offset).map((upcoming: IGetUpcomingMovie) => (
+
+            <Box
+              layoutId={upcoming.id + ""}
+              key={upcoming.id}
+              onClick={() => onBoxClicked(upcoming.id, "movie")}
+              background={makeImagePath(upcoming.poster_path, "w500")}
+              variants={BoxVariant}
+              initial="normal"
+              whileHover="hover"
+              transition={{
+                type: "tween"
+              }}
+            >
+              <Info variants={infoVariants}>
+                <h4>{upcoming.title}</h4>
+              </Info>
+            </Box>
+          ))}
         </SlideRow>
       </AnimatePresence>
 
-      {bigMovieMatch ? (
+      {/* {bigMovieMatch ? (
         <Modal
-          dataId={Number(bigMovieMatch?.params.trendId)}
+          dataId={Number(bigMovieMatch?.params.upcomingId)}
           movType={String(bigMovieMatch?.params.movType)}
         />
-      ) : null}
+      ) : null} */}
+
+      {bigMovieMatch && (
+        <Modal
+          dataId={Number(bigMovieMatch?.params.upcomingId)}
+          movType={String(bigMovieMatch?.params.movType)}
+        />
+      )}
 
     </Wrapper>
   );
 }
 
-export default TrendSlider;
+export default UpcomingMovieSlider;
