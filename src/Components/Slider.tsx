@@ -234,7 +234,6 @@ function Slider({
 
       {bigMovieMatch ? (
         <Modal
-          trendData={trendData}
           dataId={Number(bigMovieMatch?.params.trendId)}
           movType={String(bigMovieMatch?.params.movType)}
         />

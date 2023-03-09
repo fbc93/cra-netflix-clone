@@ -1,3 +1,19 @@
+export interface Iparam {
+  movType: string;
+  trendId: string;
+}
+
+export interface IPattern {
+  path: string
+}
+
+export interface IbigMovieMatch {
+  params: Iparam;
+  pathname: string;
+  pathnameBase: string;
+  pattern: IPattern
+}
+
 export interface ISeasons {
   air_date: string;
   episode_count: number;
