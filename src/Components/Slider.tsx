@@ -231,15 +231,15 @@ function Slider({
             ))}
         </SlideRow>
       </AnimatePresence>
-      <AnimatePresence>
-        {bigMovieMatch ? (
-          <Modal
-            trendData={trendData}
-            dataId={Number(bigMovieMatch?.params.trendId)}
-            movType={String(bigMovieMatch?.params.movType)}
-          />
-        ) : null}
-      </AnimatePresence>
+
+      {bigMovieMatch ? (
+        <Modal
+          trendData={trendData}
+          dataId={Number(bigMovieMatch?.params.trendId)}
+          movType={String(bigMovieMatch?.params.movType)}
+        />
+      ) : null}
+
     </Wrapper>
   );
 }

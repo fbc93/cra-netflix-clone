@@ -1,3 +1,45 @@
+export interface ISeasons {
+  air_date: string;
+  episode_count: number;
+  id: number;
+  name: string;
+  poster_path: string;
+  season_number: number;
+}
+
+export interface INextEpisode {
+  air_date: string;
+  episode_number: number;
+  id: number;
+  name: string;
+  still_path: string;
+  season_number: number;
+}
+
+export interface IProductCompanies {
+  id: number;
+  logo_path: string;
+  name: string;
+}
+
+export interface INetworks {
+  id: number;
+  logo_path: string;
+  name: string;
+}
+
+export interface ISpokenLang {
+  name: string;
+}
+
+export interface ILastEpisode {
+  air_date: string;
+  episode_number: number;
+  name: string;
+  runtime: number;
+  still_path: string;
+}
+
 export interface IGetTvDetail {
   id: number;
   name: string;
@@ -12,10 +54,17 @@ export interface IGetTvDetail {
   number_of_episodes: number;
   number_of_seasons: number;
   first_air_date: string;
-  networks: [];
+  networks: INetworks[];
   production_companies: [];
-  production_countries: [];
+  production_countries: IProductCompanies[];
   seasons: [];
+  original_title: string;
+  vote_average: number;
+  runtime: number;
+  original_language: string;
+  spoken_languages: ISpokenLang[];
+  last_episode_to_air: ILastEpisode;
+  next_episode_to_air: INextEpisode;
 }
 
 export interface IGenre {
@@ -37,6 +86,7 @@ export interface IData {
   original_title: string;
   genre_ids: [];
   media_type: "";
+  homepage: string;
 }
 
 export interface IGetTrend {

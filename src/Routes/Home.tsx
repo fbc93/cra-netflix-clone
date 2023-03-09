@@ -36,6 +36,7 @@ function Home() {
     getMovieGenre
   );
 
+
   return (
     <MainView
       initial={{ opacity: 0 }}
@@ -51,6 +52,7 @@ function Home() {
             MovieGenreData={MovieGenreData?.genres as IGenre[]}
           />
           <Slider trendData={trendData?.results as IData[]} />
+
         </>
       }
     </MainView >
