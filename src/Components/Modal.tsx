@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { getDetail, IbigMovieMatch, IGetTvDetail } from "../api";
 import { useQuery } from "react-query";
 import TVdetail from "./Modal/TVdetail";
+import Moviedetail from "./Modal/Moviedetail";
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -94,22 +95,11 @@ function Modal({
               />
 
             ) : (
-              <BigMovie
-                layoutId={bigMovieMatch?.params.trendId}
-                style={{ top: scrollY.get() + 100 }}>
-                {clickedMovie &&
-                  <>
-                    <BigCover style={{ backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(clickedMovie.backdrop_path, "w500")})` }} />
-                    <h1>MOVIE</h1>
-                    <div>{DetailData?.vote_average}</div>
-                    <BigTitle>{DetailData?.name}</BigTitle>
-                    <div>{DetailData?.original_name ? DetailData?.original_name : DetailData?.original_title}</div>
-                    <div>러닝타임: {DetailData?.runtime}분</div>
-                    <div>개봉일 :{DetailData?.first_air_date}</div>
-                    <BigOverview>{DetailData?.overview}</BigOverview>
-                  </>
-                }
-              </BigMovie>
+              <Moviedetail
+                DetailData={DetailData as IGetTvDetail}
+                clickedMovie={clickedMovie as IGetTvDetail}
+                bigMovieMatch={bigMovieMatch as IbigMovieMatch}
+              />
             )}
           </>
         ) : null}
