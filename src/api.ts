@@ -17,7 +17,7 @@ export interface IGetUpcomingMovie {
 }
 
 export interface IGetUpcomingMovies {
-  dates: IDates[];
+  dates: IDates;
   results: IGetUpcomingMovie[];
 }
 

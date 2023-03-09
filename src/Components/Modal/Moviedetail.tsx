@@ -53,8 +53,6 @@ function Moviedetail({
 }: IModal) {
   const { scrollY } = useScroll();
 
-  console.log("movie", DetailData);
-
   return (
     <BigMovie
       layoutId={bigMovieMatch?.params.trendId}

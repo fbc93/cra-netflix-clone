@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IGetUpcomingMovie } from "../../api";
+import { IGetUpcomingMovie, IGetUpcomingMovies } from "../../api";
 import useWindowDimensions from "../../useWidowDimensions";
 import { makeImagePath } from "../../utils";
 import Modal from "../Modal";
@@ -119,8 +119,10 @@ const infoVariants = {
 
 function UpcomingMovieSlider({
   upcomingData,
+  upcomingTermData
 }: {
-  upcomingData: IGetUpcomingMovie[]
+  upcomingData: IGetUpcomingMovie[],
+  upcomingTermData: IGetUpcomingMovies
 
 }) {
   const offset = 6;
@@ -195,7 +197,7 @@ function UpcomingMovieSlider({
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
-        🎉 Upcoming Movie, 개봉 예정작
+        🎉 Upcoming Movie, 개봉 예정작 ({upcomingTermData?.dates.minimum} ~ {upcomingTermData?.dates.maximum})
         <ViewAll>
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>
@@ -233,13 +235,6 @@ function UpcomingMovieSlider({
           ))}
         </SlideRow>
       </AnimatePresence>
-
-      {/* {bigMovieMatch ? (
-        <Modal
-          dataId={Number(bigMovieMatch?.params.upcomingId)}
-          movType={String(bigMovieMatch?.params.movType)}
-        />
-      ) : null} */}
 
       {bigMovieMatch && (
         <Modal

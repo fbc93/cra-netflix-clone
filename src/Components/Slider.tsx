@@ -4,16 +4,21 @@ import UpcomingMovieSlider from "./Slider/UpcomingMovieSlider";
 
 function Slider({
   trendData,
-  upcomingData
+  upcomingData,
+  upcomingTermData
 }: {
   trendData: IData[],
   upcomingData: IGetUpcomingMovie[]
+  upcomingTermData: IGetUpcomingMovies
 }) {
 
   return (
     <>
       <TrendSlider trendData={trendData as IData[]} />
-      <UpcomingMovieSlider upcomingData={upcomingData as IGetUpcomingMovie[]} />
+      <UpcomingMovieSlider
+        upcomingData={upcomingData as IGetUpcomingMovie[]}
+        upcomingTermData={upcomingTermData as IGetUpcomingMovies}
+      />
     </>
   );
 }

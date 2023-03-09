@@ -43,6 +43,8 @@ function Home() {
 
 
 
+
+
   return (
     <MainView
       initial={{ opacity: 0 }}
@@ -60,6 +62,7 @@ function Home() {
           <Slider
             trendData={trendData?.results as IData[]}
             upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
+            upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
           />
 
         </>
