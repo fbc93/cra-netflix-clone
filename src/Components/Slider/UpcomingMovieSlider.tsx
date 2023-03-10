@@ -197,7 +197,7 @@ function UpcomingMovieSlider({
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
-        🎉 Upcoming Movie, 개봉 예정작 ({upcomingTermData?.dates.minimum} ~ {upcomingTermData?.dates.maximum})
+        🎉 Upcoming Movie! 개봉 예정 영화 ({upcomingTermData?.dates.minimum} ~ {upcomingTermData?.dates.maximum})
         <ViewAll>
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>

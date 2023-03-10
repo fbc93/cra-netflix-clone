@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { getMovieGenre, getTrending, getTvGenre, getUpcomingMovies, IData, IGenre, IGetGenres, IGetTrend, IGetUpcomingMovie, IGetUpcomingMovies } from "../api";
+import { getMovieGenre, getTopRatedShows, getTrending, getTvGenre, getUpcomingMovies, IData, IGenre, IGetGenres, IGetTrend, IGetUpcomingMovie, IGetUpcomingMovies, ITopRatedTV } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
 import Slider from "../Components/Slider";
@@ -41,9 +41,10 @@ function Home() {
     getUpcomingMovies
   );
 
-
-
-
+  const { data: TopRatedTVData } = useQuery(
+    "topRatedTV",
+    getTopRatedShows
+  );
 
   return (
     <MainView
@@ -63,6 +64,7 @@ function Home() {
             trendData={trendData?.results as IData[]}
             upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
             upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
+            topRatedTVData={TopRatedTVData?.results as ITopRatedTV[]}
           />
 
         </>

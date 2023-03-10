@@ -1,3 +1,21 @@
+export interface ITopRatedTV {
+  backdrop_path: string;
+  first_air_date: string;
+  id: number;
+  name: string;
+  original_language: string;
+  original_name: string;
+  poster_path: string;
+  vote_average: number;
+  overview: string;
+  origin_country: string[];
+  genre_ids: number[];
+}
+
+export interface ITopRatedTVs {
+  results: ITopRatedTV[];
+}
+
 export interface IDates {
   maximum: string;
   minimum: string;
@@ -38,7 +56,7 @@ export interface Iparam {
 }
 
 export interface IPattern {
-  path: string
+  path: string;
 }
 
 export interface IbigMovieMatch {
@@ -140,39 +158,39 @@ export interface IData {
 }
 
 export interface IGetTrend {
-  page: number,
-  results: IData[],
-  total_pages: number,
-  total_results: number
+  page: number;
+  results: IData[];
+  total_pages: number;
+  total_results: number;
 }
 
 export interface IOnAirTVResult {
-  backdrop_path: string,
-  first_air_date: string,
-  genre_ids: [],
-  id: number,
-  name: string,
-  origin_country: [],
-  original_language: string,
-  original_name: string,
-  overview: string,
-  popularity: number,
-  poster_path: string,
-  vote_average: number,
-  vote_count: number
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: [];
+  id: number;
+  name: string;
+  origin_country: [];
+  original_language: string;
+  original_name: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  vote_average: number;
+  vote_count: number;
 }
 
 export interface ITrailer {
-  iso_639_1: string,
-  iso_3166_1: string,
-  name: string,
-  key: string,
-  site: string,
-  size: number,
-  type: string,
-  official: boolean,
-  published_at: string,
-  id: string
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
 }
 
 //MovieDB API 정보
@@ -256,7 +274,7 @@ export function getPopularShows() {
 
 //Get Top Rated [TV]
 export function getTopRatedShows() {
-  return fetch(`${BASE_PATH}/tv/top_rated${LAST_STRING}`)
+  return fetch(`${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
     .then((res) => res.json());
 }
 

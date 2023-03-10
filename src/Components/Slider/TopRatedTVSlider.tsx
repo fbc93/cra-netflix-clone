@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IData } from "../../api";
+import { ITopRatedTV } from "../../api";
 import useWindowDimensions from "../../useWidowDimensions";
 import { makeImagePath } from "../../utils";
 import Modal from "../Modal";
@@ -116,32 +116,30 @@ const infoVariants = {
   }
 }
 
-function TrendSlider({
-  trendData,
 
 
+
+function TopRatedTVSlider({
+  topRatedTVData
 }: {
-  trendData: IData[],
-
+  topRatedTVData: ITopRatedTV[]
 }) {
-
-
 
   const offset = 6;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const toggleLeaving = () => setLeaving(prev => !prev);
   const [isRight, setIsRight] = useState(1);
   const navigate = useNavigate();
+  const toggleLeaving = () => setLeaving(prev => !prev);
   const width = useWindowDimensions();
-  const bigMovieMatch = useMatch("/trending/:movType/:trendId");
+  const bigMovieMatch = useMatch("/topRated/:movType/:topRatedId");
 
   const changeIndex = (right: number) => {
     if (leaving) return;
-    if (trendData) {
+    if (topRatedTVData) {
       toggleLeaving();
       setIsRight(right);
-      const totalLength = Object.keys(trendData).length;
+      const totalLength = Object.keys(topRatedTVData).length;
 
       const maxIndex =
         totalLength % offset === 0
@@ -160,9 +158,6 @@ function TrendSlider({
     }
   };
 
-  const onBoxClicked = (movieId: number, media_type: string) => {
-    navigate(`/trending/${media_type}/${movieId}`);
-  };
 
   const rowVariants = {
     hidden: (right: number) => {
@@ -180,6 +175,9 @@ function TrendSlider({
     },
   };
 
+  const onBoxClicked = (topRatedId: number, media_type: string) => {
+    navigate(`/trending/${media_type}/${topRatedId}`);
+  };
 
   const rowProps = {
     custom: isRight,
@@ -194,12 +192,12 @@ function TrendSlider({
     key: index,
   }
 
-
+  console.log(topRatedTVData)
 
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
-        🏆 오늘 하루 인기있었던 영화 / TV시리즈
+        ⭐️ 별이 다섯개! ⭐️ 최고의 평점을 받은 TV시리즈
         <ViewAll>
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>
@@ -216,39 +214,37 @@ function TrendSlider({
         <SlideRow
           {...rowProps}
         >
-          {trendData
-            .slice(1)
-            .slice(offset * index, offset * index + offset)
-            .map((movie: IData) => (
-              <Box
-                layoutId={movie.id + ""}
-                key={movie.id}
-                onClick={() => onBoxClicked(movie.id, movie.media_type)}
-                background={makeImagePath(movie.poster_path, "w500")}
-                variants={BoxVariant}
-                initial="normal"
-                whileHover="hover"
-                transition={{
-                  type: "tween"
-                }}
-              >
-                <Info variants={infoVariants}>
-                  <h4>{movie.name ? movie.name : movie.title}</h4>
-                </Info>
-              </Box>
-            ))}
+          {topRatedTVData?.slice(1).slice(offset * index, offset * index + offset).map((topratedTV: ITopRatedTV) => (
+
+            <Box
+              layoutId={topratedTV.id + ""}
+              key={topratedTV.id}
+              onClick={() => onBoxClicked(topratedTV.id, "tv")}
+              background={makeImagePath(topratedTV.poster_path, "w500")}
+              variants={BoxVariant}
+              initial="normal"
+              whileHover="hover"
+              transition={{
+                type: "tween"
+              }}
+            >
+              <Info variants={infoVariants}>
+                <h4>{topratedTV.name}</h4>
+              </Info>
+            </Box>
+          ))}
         </SlideRow>
       </AnimatePresence>
 
-      {bigMovieMatch ? (
+      {bigMovieMatch && (
         <Modal
-          dataId={Number(bigMovieMatch?.params.trendId)}
+          dataId={Number(bigMovieMatch?.params.topRatedId)}
           movType={String(bigMovieMatch?.params.movType)}
         />
-      ) : null}
+      )}
 
     </Wrapper>
   );
 }
 
-export default TrendSlider;
+export default TopRatedTVSlider;
