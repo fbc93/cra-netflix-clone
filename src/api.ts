@@ -1,3 +1,33 @@
+export interface IPopularPerson {
+  name: string;
+  id: number;
+  known_for_department: string;
+  popularity: number;
+  profile_path: string;
+}
+export interface IPopularPeople {
+  results: IPopularPerson[];
+}
+export interface IMovieProvider {
+  provider_name: string;
+  provider_id: number;
+  logo_path: string;
+}
+
+export interface IMovieProviders {
+  results: [];
+}
+
+export interface ITVProvider {
+  provider_name: string;
+  provider_id: number;
+  logo_path: string;
+}
+
+export interface ITVProviders {
+  results: [];
+}
+
 export interface ITopRatedTV {
   backdrop_path: string;
   first_air_date: string;
@@ -287,5 +317,22 @@ export function getMovieVideos(movieId: number) {
 //Get Videos [TV]
 export function getTVVideos(movieId: number) {
   return fetch(`${BASE_PATH}/tv/${movieId}/videos${LAST_STRING}`)
+    .then((res) => res.json());
+}
+
+//Get Watch Providers [MOVIE]
+export function getTVWatchProviders() {
+  return fetch(`${BASE_PATH}/watch/providers/movie?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
+    .then((res) => res.json());
+}
+//Get Watch Providers [TV]
+export function getMovieWatchProvider() {
+  return fetch(`${BASE_PATH}/watch/providers/tv?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
+    .then((res) => res.json());
+}
+
+//Get Popular Person
+export function getPopularPerson() {
+  return fetch(`${BASE_PATH}/person/popular?api_key=${API_KEY}&language=${LANGUAGE_CODE}`)
     .then((res) => res.json());
 }

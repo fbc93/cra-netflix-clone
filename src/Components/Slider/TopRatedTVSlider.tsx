@@ -192,8 +192,6 @@ function TopRatedTVSlider({
     key: index,
   }
 
-  console.log(topRatedTVData)
-
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
