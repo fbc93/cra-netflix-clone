@@ -47,7 +47,10 @@ const PopularList = styled.ul`
   display: flex;
 
   li {
-   
+    img {
+   width:10vw;
+
+  }
   }
 `;
 
@@ -70,9 +73,10 @@ function PopularPeopleSlider({
       <PopularList>
         {popularPeopleData?.map((person: IPopularPerson) => (
           <li key={person.id}>
+            <img src={makeImagePath(String(person.profile_path))} alt={person.name} />
             <strong>{person.name}</strong>
             <div>{person.popularity}</div>
-            <img src={makeImagePath(String(person.profile_path))} style={{ width: 100 }} alt={person.name} />
+            {person.known_for.map((movie: any) => <span key={movie.id}>{movie.title}</span>)}
           </li>
         ))}
       </PopularList>

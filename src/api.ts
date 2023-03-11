@@ -4,6 +4,7 @@ export interface IPopularPerson {
   known_for_department: string;
   popularity: number;
   profile_path: string;
+  known_for: [];
 }
 export interface IPopularPeople {
   results: IPopularPerson[];

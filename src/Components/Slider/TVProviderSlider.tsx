@@ -1,39 +1,170 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { ITVProvider } from "../../api";
 import { makeImagePath } from "../../utils";
 
-const Slider = styled.div`
+const SliderContainer = styled.div`
   display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  width: 100%;
+  height: 5vh;
+  overflow: hidden;
+  position: relative;
+  margin-bottom:5vh;
 
-  div{
-    width:8vw;
-    margin-right:1vw;
-    margin-bottom:1vh;
-    border-radius: 2vw;
-    overflow: hidden;
-
-    img{
-      display: inline-block;
-      width:100%;
-    }
-  }
 `;
 
-function TVProviderSlider({
-  TVProviderData
+const offset1 = keyframes`
+   0% {
+     transform:translateX(0%);
+    }
+    
+    100% {
+      transform:translateX(-100%);
+    }
+`;
+
+const offset2 = keyframes`
+   0% {
+     transform:translateX(100%);
+  }
+  
+  100% {
+    transform:translateX(0%);
+    }
+`;
+
+const offset3 = keyframes`
+   0% {
+     transform:translateX(200%);
+  }
+  
+  100% {
+    transform:translateX(100%);
+    }
+`;
+
+const SlideOffset1 = styled.span`
+    display: inline-flex;
+    animation: 60s linear 0s infinite normal none running ${offset1};
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+    
+    section {
+      white-space: nowrap;
+      overflow: hidden;
+      display: flex;
+
+      span {
+        display: inline-block;
+        width:55px;
+        margin-right:15px;
+
+        img {
+          width:100%;
+          border-radius: 10px;
+          display: inline-block;
+        }
+      }
+    }
+`;
+
+const SlideOffset2 = styled.span`
+    display: inline-flex;
+    animation: 60s linear 0s infinite normal none running ${offset2};
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+    
+    section {
+      white-space: nowrap;
+      overflow: hidden;
+      display: flex;
+
+      span {
+        display: inline-block;
+        width:55px;
+        margin-right:15px;
+
+        img {
+          width:100%;
+          border-radius: 10px;
+          display: inline-block;
+        }
+      }
+    }
+`;
+
+const SlideOffset3 = styled.span`
+    display: inline-flex;
+    animation: 60s linear 0s infinite normal none running ${offset3};
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+    
+    section {
+      white-space: nowrap;
+      overflow: hidden;
+      display: flex;
+
+      span {
+        display: inline-block;
+        width:55px;
+        margin-right:15px;
+
+        img {
+          width:100%;
+          border-radius: 10px;
+          display: inline-block;
+        }
+      }
+    }
+`;
+
+function MovieProviderSlider({
+  TVProviderData,
+
 }: {
-  TVProviderData: ITVProvider[]
+  TVProviderData: ITVProvider[],
+
 }) {
 
   return (
-    <Slider>
-      {TVProviderData?.map((item: ITVProvider) => (
-        <div key={item.provider_id}>
-          <img src={makeImagePath(String(item.logo_path))} alt={item.provider_name} />
-        </div>
-      ))}
-    </Slider>
+    <SliderContainer>
+
+
+      <SlideOffset1>
+        <section>
+          {TVProviderData?.map((item: ITVProvider) => (
+            <span key={item.provider_id}>
+              <img src={makeImagePath(String(item.logo_path))} alt={item.provider_name} />
+            </span>
+          ))}
+        </section>
+      </SlideOffset1>
+      <SlideOffset2>
+        <section>
+          {TVProviderData?.map((item: ITVProvider) => (
+            <span key={item.provider_id}>
+              <img src={makeImagePath(String(item.logo_path))} alt={item.provider_name} />
+            </span>
+          ))}
+        </section>
+      </SlideOffset2>
+      <SlideOffset3>
+        <section>
+          {TVProviderData?.map((item: ITVProvider) => (
+            <span key={item.provider_id}>
+              <img src={makeImagePath(String(item.logo_path))} alt={item.provider_name} />
+            </span>
+          ))}
+        </section>
+      </SlideOffset3>
+
+
+    </SliderContainer>
   );
 }
 
-export default TVProviderSlider;
+export default MovieProviderSlider;
