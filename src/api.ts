@@ -231,15 +231,15 @@ const REGION_CODE = "ko";
 const BASE_PATH = "https://api.themoviedb.org/3";
 const LAST_STRING = `?api_key=${API_KEY}&language=${LANGUAGE_CODE}&region=${REGION_CODE}`;
 
-//Get Search [Movies/TV] 
-export function getSearch(KEYWORD: string) {
-  return fetch(`${BASE_PATH}/search/multi?api_key=${API_KEY}&language=${LANGUAGE_CODE}&query=${KEYWORD}&page=1&include_adult=false&region=${REGION_CODE}`)
-    .then((res) => res.json());
-}
-
 //Get Trending [Movies/TV]
 export function getTrending() {
   return fetch(`${BASE_PATH}/trending/all/day${LAST_STRING}`)
+    .then((res) => res.json());
+}
+
+//Get Search [Movies/TV] 
+export function getSearch(KEYWORD: string) {
+  return fetch(`${BASE_PATH}/search/multi?api_key=${API_KEY}&language=${LANGUAGE_CODE}&query=${KEYWORD}&page=1&include_adult=false&region=${REGION_CODE}`)
     .then((res) => res.json());
 }
 

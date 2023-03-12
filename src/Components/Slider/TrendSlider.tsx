@@ -8,26 +8,36 @@ import { makeImagePath } from "../../utils";
 import Modal from "../Modal";
 
 const Wrapper = styled(motion.section)`
-  margin: 0px 4vw 3vw;
   position: relative;
-  aspect-ratio: 7/2;
+  aspect-ratio: 100/25;
 
+  &:after{
+    content: "";
+    display: inline-block;
+    width: 100%;
+    aspect-ratio: 100/25;
+  }
+  
   &:hover{
-    span{
+    .viewlink > span {
       opacity:1;
       right:-1vw;
+    }
+    .prev, .next {
+      opacity: 1;
     }
   }
 `;
 
 const SliderTitle = styled(motion(Link))`
-  margin-bottom:2.5vh;
-  font-size:1.6vw;
-  letter-spacing: -1px;
+  margin: auto auto 4vh auto;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: -0.1rem;
   font-weight: 500;
-  display: inline-block;
   display: flex;
   align-items: center;
+  width:113rem;
 
   span {
     display: inline-block;
@@ -46,48 +56,97 @@ const ViewAll = styled.div`
   align-items: center;
 `;
 
-const SlideRow = styled(motion.div)`
-  display: grid;
-  gap:10px;
-  grid-template-columns: repeat(6,1fr);
-  //padding:0 0 0 4vw;
-  justify-content: space-between;
+const SlideRow = styled(motion.div) <{ gridnum: number }>`
   position: absolute;
+  left:0;
   width:100%;
+  clear:both;
+  display: flex;
+  justify-content: center;
+  display: grid;
+  gap:15px;
+  grid-template-columns: repeat(${(props) => props.gridnum},1fr);
+  aspect-ratio: 100/25;
+  padding-bottom:3rem;
+ 
 `;
 
-const Box = styled(motion.div) <{ background: string }>`
-  cursor:pointer;
-  background-color: #ffffff;
-  background-image: url(${props => props.background});
-  aspect-ratio: 2/3;
-  font-size:60px;
-  background-position: top;
+const Box = styled(motion.div) <{ background: string; offset: number }>`
+  background-image: url(${(props) => props.background});
   background-size: cover;
+  background-position: top center;
   background-repeat: no-repeat;
-  border-radius: 0.5vw;
+  font-size: 4rem;
+  border-radius: 2rem;
+  cursor: pointer;
   overflow: hidden;
-
+  position: relative;
+  z-index: 1;
+  border:0.2rem solid rgba(84,185,197);
+ 
   &:first-child {
     transform-origin: center left;
+    border-radius: 0 2rem 2rem 0;
   }
   &:last-child {
     transform-origin: center right;
+    border-radius: 2rem 0 0 2rem;
   }
 `;
 
 const Info = styled(motion.div)`
-  padding:10px;
-  opacity:0;
-  position: relative;
-  width:100%;
+  width: 100%;
+  height: 10vw;
+  background-color: rgba(0,0,0,0.9);
+  opacity: 0;
+  position: absolute;
   bottom:0;
-  background-color: ${props => props.theme.red};
+  right: 0;
+  border-radius: 10rem 0 0 0;
+  padding:1.4rem;
+  border-top:0.2rem solid rgba(84,185,197);
 
-  h4 {
-    text-align: center;
-    font-size:18px;
+  h2 {
+   font-size:1.5vw;
+   text-align: center;
+   font-weight: bold;
+   letter-spacing: -0.1rem;
+   line-height: 1.5;
+   margin-bottom:1.4rem;
   }
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    color:rgb(84, 185, 197);
+
+    p {
+      font-size:1.3vw;
+      letter-spacing: -0.1rem;
+    }
+
+    span {
+      font-size:1.4vw;
+    }
+  }
+`;
+
+const SlideArrow = styled.span`
+  position: absolute;
+  z-index: 11;
+  top: 50%;
+  cursor: pointer;
+  font-size: 4rem;
+  opacity: 0;
+  transform:translateY(-50%);
+`;
+
+const PrevBtn = styled(SlideArrow)`
+  left:1rem;
+`;
+const NextBtn = styled(SlideArrow)`
+  right:1rem;
 `;
 
 const BoxVariant = {
@@ -97,6 +156,7 @@ const BoxVariant = {
   hover: {
     scale: 1.2,
     y: -50,
+    zIndex: 10,
     transition: {
       delay: 0.2,
       duration: 0.3,
@@ -125,9 +185,6 @@ function TrendSlider({
   title: string;
 
 }) {
-
-
-
   const offset = 6;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
@@ -181,7 +238,6 @@ function TrendSlider({
     },
   };
 
-
   const rowProps = {
     custom: isRight,
     variants: rowVariants,
@@ -193,36 +249,38 @@ function TrendSlider({
       duration: 1
     },
     key: index,
+    gridnum: offset
   }
 
-
+  console.log(trendData)
 
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
         {title}
-        <ViewAll>
+        <ViewAll className="viewlink">
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>
         </ViewAll>
       </SliderTitle>
 
-      <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(-1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", left: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_back_ios</span>
-      <span className="material-symbols-rounded" onClick={() => onClickToArrowBtn(1)} style={{ position: "absolute", zIndex: 2, top: 50 + "%", right: 0, cursor: "pointer", fontSize: 3.5 + "vw" }}>arrow_forward_ios</span>
+      <PrevBtn className="prev material-symbols-rounded" onClick={() => onClickToArrowBtn(-1)}>arrow_back_ios</PrevBtn>
+      <NextBtn className="next material-symbols-rounded" onClick={() => onClickToArrowBtn(1)}>arrow_forward_ios</NextBtn>
 
       <AnimatePresence
         initial={false}
         custom={isRight}
         onExitComplete={toggleLeaving}>
+
         <SlideRow
           {...rowProps}
         >
-          {trendData
-            .slice(1)
+          {trendData?.slice(1)
             .slice(offset * index, offset * index + offset)
             .map((movie: IData) => (
               <Box
-                layoutId={movie.id + ""}
+                offset={offset}
+                layoutId={movie.id + "trend"}
                 key={movie.id}
                 onClick={() => onBoxClicked(movie.id, movie.media_type)}
                 background={makeImagePath(movie.poster_path, "w500")}
@@ -234,11 +292,18 @@ function TrendSlider({
                 }}
               >
                 <Info variants={infoVariants}>
-                  <h4>{movie.name ? movie.name : movie.title}</h4>
+                  <h2>{movie.name ? movie.name : movie.title}</h2>
+                  <div>
+                    <p>상세정보</p>
+                    <span className="material-symbols-rounded">
+                      double_arrow
+                    </span>
+                  </div>
                 </Info>
               </Box>
             ))}
         </SlideRow>
+
       </AnimatePresence>
 
       {bigMovieMatch ? (

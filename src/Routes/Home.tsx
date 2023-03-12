@@ -22,15 +22,21 @@ import {
 } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
-import Slider from "../Components/Slider";
 import ProviderSlider from "../Components/ProviderSlider";
 import PopularPeopleSlider from "../Components/Slider/PopularPeopleSlider";
+import TrendSlider from "../Components/Slider/TrendSlider";
+import UpcomingMovieSlider from "../Components/Slider/UpcomingMovieSlider";
+import TopRatedTVSlider from "../Components/Slider/TopRatedTVSlider";
 
 const Loader = styled.div`
-  height: 20vh;
+  height: 80rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 8rem;
+  color: white;
+  position: absolute;
+  width: 100%;
 `;
 
 const MainView = styled(motion.main)`
@@ -42,8 +48,8 @@ const MainView = styled(motion.main)`
 
 function Home() {
   //DATA
-  const { data: trendData, isLoading: trendLoading } = useQuery<IGetTrend>(
-    "trend",
+  const { data: trendData, isLoading: trendingLoading } = useQuery<IGetTrend>(
+    "trendingMovieTV",
     getTrending
   );
 
@@ -89,29 +95,35 @@ function Home() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {trendLoading ?
-        <Loader>Loading...</Loader> :
-        <>
-          <VisualBanner
-            trendData={trendData?.results as IData[]}
-            TvGenreData={TvGenreData?.genres as IGenre[]}
-            MovieGenreData={MovieGenreData?.genres as IGenre[]}
-          />
-          <Slider
-            trendData={trendData?.results as IData[]}
-            upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
-            upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
-            topRatedTVData={TopRatedTVData?.results as ITopRatedTV[]}
-          />
-          <PopularPeopleSlider
-            popularPeopleData={PopularPersonData?.results as IPopularPerson[]}
-          />
-          <ProviderSlider
-            MovieProviderData={MovieProviderData?.results.slice(0, 20) as IMovieProvider[]}
-            TVProviderData={TVProviderData?.results.slice(20, 40) as ITVProvider[]}
-          />
-        </>
+      <Loader>Loading</Loader>
+      {trendingLoading ? <Loader /> :
+        <VisualBanner
+          trendData={trendData?.results as IData[]}
+          TvGenreData={TvGenreData?.genres as IGenre[]}
+          MovieGenreData={MovieGenreData?.genres as IGenre[]}
+        />
       }
+
+      <TrendSlider
+        title={"🏆 오늘 하루 인기있었던 영화 / TV시리즈"}
+        trendData={trendData?.results as IData[]}
+      />
+      <PopularPeopleSlider
+        popularPeopleData={PopularPersonData?.results as IPopularPerson[]}
+      />
+      <UpcomingMovieSlider
+        title={"🎉 Upcoming Movie! 개봉 예정 영화"}
+        upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
+        upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
+      />
+      <TopRatedTVSlider
+        title={"⭐️ 별이 다섯개! ⭐️ 최고의 평점을 받은 TV시리즈"}
+        topRatedTVData={TopRatedTVData?.results as ITopRatedTV[]}
+      />
+      <ProviderSlider
+        MovieProviderData={MovieProviderData?.results.slice(0, 20) as IMovieProvider[]}
+        TVProviderData={TVProviderData?.results.slice(20, 40) as ITVProvider[]}
+      />
     </MainView >
   );
 }

@@ -4,7 +4,7 @@ import { IData, IGenre } from "../api";
 import { makeImagePath } from "../utils";
 
 const Banner = styled.section`
-  height: 80vh;
+  height: 85vh;
   padding-top:6.8rem;
   background-repeat: no-repeat;
   background-position: center;
