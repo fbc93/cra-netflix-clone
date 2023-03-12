@@ -17,12 +17,19 @@ function Slider({
 
   return (
     <>
-      <TrendSlider trendData={trendData as IData[]} />
+      <TrendSlider
+        title={"🏆 오늘 하루 인기있었던 영화 / TV시리즈"}
+        trendData={trendData as IData[]}
+      />
       <UpcomingMovieSlider
+        title={"🎉 Upcoming Movie! 개봉 예정 영화"}
         upcomingData={upcomingData as IGetUpcomingMovie[]}
         upcomingTermData={upcomingTermData as IGetUpcomingMovies}
       />
-      <TopRatedTVSlider topRatedTVData={topRatedTVData as ITopRatedTV[]} />
+      <TopRatedTVSlider
+        title={"⭐️ 별이 다섯개! ⭐️ 최고의 평점을 받은 TV시리즈"}
+        topRatedTVData={topRatedTVData as ITopRatedTV[]}
+      />
     </>
   );
 }

@@ -118,10 +118,11 @@ const infoVariants = {
 
 function TrendSlider({
   trendData,
-
+  title
 
 }: {
   trendData: IData[],
+  title: string;
 
 }) {
 
@@ -199,7 +200,7 @@ function TrendSlider({
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
-        🏆 오늘 하루 인기있었던 영화 / TV시리즈
+        {title}
         <ViewAll>
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>
