@@ -120,9 +120,11 @@ const infoVariants = {
 
 
 function TopRatedTVSlider({
-  topRatedTVData
+  topRatedTVData,
+  title
 }: {
-  topRatedTVData: ITopRatedTV[]
+  topRatedTVData: ITopRatedTV[],
+  title: string;
 }) {
 
   const offset = 6;
@@ -192,12 +194,10 @@ function TopRatedTVSlider({
     key: index,
   }
 
-  console.log(topRatedTVData)
-
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
-        ⭐️ 별이 다섯개! ⭐️ 최고의 평점을 받은 TV시리즈
+        {title}
         <ViewAll>
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>
