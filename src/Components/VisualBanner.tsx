@@ -3,10 +3,9 @@ import styled from "styled-components";
 import { IData, IGenre } from "../api";
 import { makeImagePath } from "../utils";
 
-const Banner = styled.section<{ bgImage: string }>`
-  height: 45vw;
-  padding-top:68px;
-  background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,1)) ,url( ${props => props.bgImage});
+const Banner = styled.section`
+  height: 80vh;
+  padding-top:6.8rem;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -16,23 +15,43 @@ const Banner = styled.section<{ bgImage: string }>`
   justify-content: center;
 `;
 
+const Container = styled.div`
+  width: 113rem;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  padding: 0 3rem;
+`;
+
+const BackgdropImage = styled.div<{ bgImage: string }>`
+  background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,1)) ,url( ${props => props.bgImage});
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 80rem;
+  filter: brightness(0.7);
+`;
+
 const TitleBox = styled.div`
-  width: 35%;
-  margin: 0 0 0 4%;
+  width: 70%;
+  align-self: center;
 `;
 
 const Title = styled(motion.h2)`
-  font-size:4vw;
-  letter-spacing: -1px;
-  margin-bottom:30px;
+  font-size:4rem;
+  letter-spacing: -0.1rem;
+  margin-bottom:5rem;
   font-weight: bold;
 `;
 
 const OriginalTitle = styled.span`
   color:rgba(255, 255, 255, 0.7);
-  font-size:1.6vw;
+  font-size:2rem;
   font-weight: 400;
-  margin-left:1.2vw;
+  margin-left:1rem;
 `;
 
 const GenreTagList = styled(motion.ul)`
@@ -40,17 +59,17 @@ const GenreTagList = styled(motion.ul)`
   justify-content: left;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom:25px;
+  margin-bottom:2.5rem;
 `;
 
 const GenreTag = styled.li`
-  font-size:1.2vw;
+  font-size:1.8rem;
   color: ${props => props.theme.white.darker};
   position: relative;
-  letter-spacing: -1px;
+  letter-spacing: -0.1rem;
   
   &:after{
-    width:1.4vw;
+    width:2rem;
     content:'/';
     display: inline-block;
     height: 100%;
@@ -65,8 +84,8 @@ const GenreTag = styled.li`
 `;
 
 const Overview = styled(motion.p)`
-  font-size: 1.2vw;
-  letter-spacing: -1px;
+  font-size: 1.8rem;
+  letter-spacing: -0.1rem;
   line-height: 1.7;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -79,7 +98,7 @@ const Overview = styled(motion.p)`
 const BtnList = styled(motion.ul)`
   display: flex;
   align-items: center;
-  margin-top:30px;
+  margin-top:3rem;
   width:100%;
 `;
 
@@ -87,23 +106,28 @@ const TrailerPlayBtn = styled.button`
   display: flex;
   -webkit-box-align: center;
   align-items: center;
-  width: 100vw;
-  padding: 10px 0px;
+  width: 165px;
+  height: 60px;
+  padding: 1rem 0;
   text-align: center;
   justify-content: center;
-  font-size: 1.5vw;
-  line-height: 2;
+  line-height: 1;
+  font-size: 1.8rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.5rem;
   font-weight: 400;
   outline: none;
-  margin-right:10px;
+  margin-right:1rem;
   color:#000000;
   cursor:pointer;
 
+  span {
+    line-height: 1;
+  }
+
   .material-symbols-rounded {
-    font-size:2.5vw;
-    margin-right:1vw;
+    font-size:4rem;
+    margin-right:1.5rem;
   }
 
   &:hover{
@@ -111,27 +135,32 @@ const TrailerPlayBtn = styled.button`
   }
 `;
 
-const DescInfoBtn = styled.button`
+const InfoBtn = styled.button`
   display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  width: 135vw;
-  padding: 10px 0px;
-  text-align: center;
-  justify-content: center;
-  font-size: 1.5vw;
-  line-height: 2;
-  border: none;
-  border-radius: 5px;
-  font-weight: 400;
-  outline: none;
-  background-color: rgba(109, 109, 110, 0.7);
-  color:#ffffff;
-  cursor:pointer;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 260px;
+    padding: 1rem 0px;
+    text-align: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    border: none;
+    height: 60px;
+    border-radius: 0.5rem;
+    font-weight: 400;
+    outline: none;
+    background-color: rgba(109, 109, 110, 0.7);
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+
+    span {
+      line-height: 1;
+    }
 
   .material-symbols-rounded {
-    font-size:2vw;
-    margin-right:1vw;
+    font-size:3rem;
+    margin-right:1.5rem;
   }
 
   &:hover{
@@ -182,71 +211,70 @@ function VisualBanner({
   }
 
   return (
-    <Banner bgImage={makeImagePath(trendData[0].backdrop_path || "")}>
-      <TitleBox>
+    <>
+      <BackgdropImage bgImage={makeImagePath(trendData[0].backdrop_path || "")} />
+      <Banner>
+        <Container>
+          <TitleBox>
+            <Title
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: 0.4,
+                duration: 1
+              }}
+            >
+              {trendData[0].title ? trendData[0].title : trendData[0].name}
+              <OriginalTitle>
+                {trendData[0].original_name ? trendData[0].original_name : trendData[0].original_title}
+              </OriginalTitle>
+            </Title>
 
-        <Title
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 0.4,
-            duration: 1
-          }}
-        >
-          {trendData[0].title ? trendData[0].title : trendData[0].name}
-          <OriginalTitle>
-            {trendData[0].original_name ? trendData[0].original_name : trendData[0].original_title}
-          </OriginalTitle>
-        </Title>
+            <GenreTagList
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: 0.8,
+                duration: 1
+              }}
+            >
+              {
+                convertGenreIdToNm(trendData[0].genre_ids).map((item: any) =>
+                  <GenreTag key={item}>{item}</GenreTag>
+                )
+              }
+            </GenreTagList>
 
-        <GenreTagList
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 0.8,
-            duration: 1
-          }}
-        >
-          {
-            convertGenreIdToNm(trendData[0].genre_ids).map((item: any) =>
-              <GenreTag key={item}>{item}</GenreTag>
-            )
-          }
-        </GenreTagList>
+            <Overview
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: 1.2,
+                duration: 1
+              }}
+            >{trendData[0].overview}</Overview>
 
-        <Overview
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 1.2,
-            duration: 1
-          }}
-        >{trendData[0].overview}</Overview>
-
-        <BtnList
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 1.6,
-            duration: 1
-          }}
-        >
-          <TrailerPlayBtn>
-            <span className="material-symbols-rounded">
-              play_arrow
-            </span>
-            <span>재생</span>
-          </TrailerPlayBtn>
-          <DescInfoBtn>
-            <span className="material-symbols-rounded">
-              info
-            </span>
-            <span>상세정보</span>
-          </DescInfoBtn>
-        </BtnList>
-
-      </TitleBox>
-    </Banner>
+            <BtnList
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: 1.6,
+                duration: 1
+              }}
+            >
+              <TrailerPlayBtn>
+                <span className="material-symbols-rounded">play_arrow</span>
+                <span>재생</span>
+              </TrailerPlayBtn>
+              <InfoBtn>
+                <span className="material-symbols-rounded">info</span>
+                <span>상세정보</span>
+              </InfoBtn>
+            </BtnList>
+          </TitleBox>
+        </Container>
+      </Banner>
+    </>
 
   );
 }

@@ -119,10 +119,12 @@ const infoVariants = {
 
 function UpcomingMovieSlider({
   upcomingData,
-  upcomingTermData
+  upcomingTermData,
+  title
 }: {
   upcomingData: IGetUpcomingMovie[],
-  upcomingTermData: IGetUpcomingMovies
+  upcomingTermData: IGetUpcomingMovies,
+  title: string;
 
 }) {
   const offset = 6;
@@ -197,7 +199,7 @@ function UpcomingMovieSlider({
   return (
     <Wrapper>
       <SliderTitle to={"/"}>
-        🎉 Upcoming Movie! 개봉 예정 영화 ({upcomingTermData?.dates.minimum} ~ {upcomingTermData?.dates.maximum})
+        {title} ({upcomingTermData?.dates.minimum} ~ {upcomingTermData?.dates.maximum})
         <ViewAll>
           <span>모두보기</span>
           <span className="material-symbols-rounded">arrow_forward_ios</span>

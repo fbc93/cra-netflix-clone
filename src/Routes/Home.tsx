@@ -1,6 +1,25 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { getMovieGenre, getMovieWatchProvider, getPopularPerson, getTopRatedShows, getTrending, getTvGenre, getTVWatchProviders, getUpcomingMovies, IData, IGenre, IGetGenres, IGetTrend, IGetUpcomingMovie, IGetUpcomingMovies, IMovieProvider, IMovieProviders, IPopularPeople, IPopularPerson, ITopRatedTV, ITVProvider } from "../api";
+import {
+  getMovieGenre,
+  getMovieWatchProvider,
+  getPopularPerson,
+  getTopRatedShows,
+  getTrending,
+  getTvGenre,
+  getTVWatchProviders,
+  getUpcomingMovies,
+  IData,
+  IGenre,
+  IGetGenres,
+  IGetTrend,
+  IGetUpcomingMovie,
+  IGetUpcomingMovies,
+  IMovieProvider,
+  IPopularPerson,
+  ITopRatedTV,
+  ITVProvider
+} from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
 import Slider from "../Components/Slider";
@@ -78,14 +97,14 @@ function Home() {
             TvGenreData={TvGenreData?.genres as IGenre[]}
             MovieGenreData={MovieGenreData?.genres as IGenre[]}
           />
-          <PopularPeopleSlider
-            popularPeopleData={PopularPersonData?.results as IPopularPerson[]}
-          />
           <Slider
             trendData={trendData?.results as IData[]}
             upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
             upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
             topRatedTVData={TopRatedTVData?.results as ITopRatedTV[]}
+          />
+          <PopularPeopleSlider
+            popularPeopleData={PopularPersonData?.results as IPopularPerson[]}
           />
           <ProviderSlider
             MovieProviderData={MovieProviderData?.results.slice(0, 20) as IMovieProvider[]}

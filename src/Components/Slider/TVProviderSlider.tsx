@@ -65,6 +65,12 @@ const SlideOffset1 = styled.span`
           width:100%;
           border-radius: 10px;
           display: inline-block;
+          filter: brightness(0.5);
+          transition: all ease-in-out .2s;
+
+          &:hover{
+            filter: brightness(1);
+          }
         }
       }
     }
@@ -91,6 +97,12 @@ const SlideOffset2 = styled.span`
           width:100%;
           border-radius: 10px;
           display: inline-block;
+          filter: brightness(0.5);
+          transition: all ease-in-out .2s;
+
+          &:hover{
+            filter: brightness(1);
+          }
         }
       }
     }
@@ -117,6 +129,12 @@ const SlideOffset3 = styled.span`
           width:100%;
           border-radius: 10px;
           display: inline-block;
+          filter: brightness(0.5);
+          transition: all ease-in-out .2s;
+
+          &:hover{
+            filter: brightness(1);
+          }
         }
       }
     }
