@@ -2,11 +2,9 @@ import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import {
   getMovieGenre,
-  getMovieWatchProvider,
   getTopRatedShows,
   getTrending,
   getTvGenre,
-  getTVWatchProviders,
   getUpcomingMovies,
   IData,
   IGenre,
@@ -14,13 +12,10 @@ import {
   IGetTrend,
   IGetUpcomingMovie,
   IGetUpcomingMovies,
-  IMovieProvider,
   ITopRatedTV,
-  ITVProvider
 } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
-import ProviderSlider from "../Components/ProviderSlider";
 import TrendSlider from "../Components/Slider/TrendSlider";
 import UpcomingMovieSlider from "../Components/Slider/UpcomingMovieSlider";
 import TopRatedTVSlider from "../Components/Slider/TopRatedTVSlider";

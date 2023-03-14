@@ -1,15 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { IGetUpcomingMovie, IGetUpcomingMovies } from "../../api";
+import { IData, IOnAirTV, IPopularTV } from "../../api";
 import useWindowDimensions from "../../useWidowDimensions";
-import { makeThumnailPath } from "../../utils";
+import { makeImagePath, makeThumnailPath } from "../../utils";
+import Modal from "../Modal";
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import { useRecoilValue } from "recoil";
 import { slideCnt } from "../../atoms";
-import { Skeleton } from "@mui/material";
+import { duration, Skeleton } from "@mui/material";
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined';
@@ -17,7 +18,7 @@ import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined';
 const Wrapper = styled.section`
   margin: 4vw 0;
   position: relative;
-  z-index: 0;
+  z-index: 1;
 `;
 const TitleContentRow = styled.div`
   position: relative;
@@ -40,6 +41,8 @@ const RowTitle = styled.title`
   font-weight: 500;
   margin: 0 4% 2rem;
   min-width: 6em;
+  position: relative;
+  z-index: 1;
   text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
 `;
 const Slider = styled.div`
@@ -162,15 +165,14 @@ const HandleNext = styled(Handle)`
   opacity: 0;
 `;
 
-function UpcomingMovieSlider({
-  upcomingData,
-  upcomingTermData,
+function OntheAirTVSlider({
+  onAirTVData,
   title
 }: {
-  upcomingData: IGetUpcomingMovie[],
-  upcomingTermData: IGetUpcomingMovies,
+  onAirTVData: IOnAirTV[],
   title: string;
 }) {
+
   const offset = useRecoilValue(slideCnt);
   const [index, setIndex] = useState(0);
   const [isRight, setIsRight] = useState(1); // left -1, right 1
@@ -181,12 +183,12 @@ function UpcomingMovieSlider({
   const toggleLeaving = (value: boolean) => setLeaving(value);
 
   const sliderButton = (right: number) => {
-    if (upcomingData) {
+    if (onAirTVData) {
       if (leaving) return;
       toggleLeaving(true);
       setIsRight(right);
 
-      const totalLength = upcomingData.length - 1;
+      const totalLength = onAirTVData.length - 1;
       const maxIdx = Math.floor(totalLength / offset) - 1;
 
       switch (right) {
@@ -202,8 +204,8 @@ function UpcomingMovieSlider({
   }
 
 
-  const onBoxClicked = (movieId: number, media_type: string) => {
-    navigate(`/trending/${media_type}/${movieId}`);
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/tv/${movieId}`);
   };
 
   const SliderItemVar = {
@@ -263,7 +265,7 @@ function UpcomingMovieSlider({
             onExitComplete={() => toggleLeaving(false)}
           >
             <SliderContainer
-              key={index + "_upcoming"}
+              key={index}
               gridcount={offset}
               custom={isRight}
               variants={SliderContainerVar}
@@ -275,18 +277,18 @@ function UpcomingMovieSlider({
                 duration: 1
               }}
             >
-              {upcomingData.slice(1)
+              {onAirTVData.slice(1)
                 .slice(offset * index, offset * index + offset)
-                .map((movie: IGetUpcomingMovie) => (
+                .map((movie: IOnAirTV) => (
 
                   <SliderItem
-                    key={movie.id}
-                    layoutId={movie.id + "_upcoming"}
+                    key={movie.id + "_onAirTV"}
+                    layoutId={movie.id + "onAirTV"}
                     variants={SliderItemVar}
                     initial="normal"
                     whileHover="hover"
                     offset={offset}
-                    onClick={() => onBoxClicked(movie.id, movie.media_type)}
+                    onClick={() => onBoxClicked(movie.id)}
                   >
                     <Skeleton
                       sx={{ bgcolor: 'grey.900' }}
@@ -295,7 +297,7 @@ function UpcomingMovieSlider({
                       height={100 + "%"}
                     />
                     <BackDropImage
-                      key={`${movie.id}_back_bg_upcoming`}
+                      key={`${movie.id}_back_bg_onAirTV`}
                       variants={BackBgVar}
                       initial="hidden"
                       animate="visible"
@@ -312,7 +314,7 @@ function UpcomingMovieSlider({
                         <ExpandCircleDownOutlinedIcon fontSize="large" />
                       </IconWrapper>
 
-                      <p>{movie.name ? movie.name : movie.title}</p>
+                      <p>{movie.name ? movie.name : movie.original_name}</p>
                     </InfoBottomBox>
                   </SliderItem>
 
@@ -329,4 +331,4 @@ function UpcomingMovieSlider({
   );
 }
 
-export default UpcomingMovieSlider;
+export default OntheAirTVSlider;

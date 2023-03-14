@@ -1,3 +1,50 @@
+export interface IOnAirTodayTV {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: number[];
+  id: number;
+  name: string;
+  original_name: string;
+  popularity: number;
+  poster_path: string;
+}
+
+export interface IOnAirTodayTVs {
+  results: IOnAirTodayTV[];
+}
+
+export interface IOnAirTV {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: number[];
+  id: number;
+  name: string;
+  original_name: string;
+  popularity: number;
+  poster_path: string;
+}
+
+export interface IOnAirTVs {
+  results: IOnAirTV[];
+}
+
+export interface IPopularTV {
+  backdrop_path: string;
+  first_air_date: string;
+  genre_ids: number[];
+  id: number;
+  name: string;
+  origin_country: string[];
+  original_name: string;
+  popularity: number;
+  poster_path: string;
+  vote_average: number;
+}
+
+export interface IPopularTVs {
+  results: IPopularTV[];
+}
+
 export interface IPopularPerson {
   name: string;
   id: number;
