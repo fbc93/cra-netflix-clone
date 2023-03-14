@@ -7,7 +7,7 @@ import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@mui/material";
-import { getMovieVideos, getTVVideos, IData, IGenre, IPopularTV } from "../../api";
+import { getMovieVideos, getTVVideos, IData, IGenre, IPopularTV, ITopRatedTV } from "../../api";
 import { makeImagePath } from "../../utils";
 
 const Wrapper = styled.span`
@@ -222,15 +222,18 @@ const InfoBtn = styled(DefaultBtn)`
 `;
 
 function VisualBannerTV({
-  PopularTVData,
+  TopRatedTVData,
   TvGenreData,
   MovieGenreData
 }: {
-  PopularTVData: IPopularTV[],
+  TopRatedTVData: ITopRatedTV[],
   TvGenreData: IGenre[],
   MovieGenreData: IGenre[]
 
 }) {
+
+
+
   const [isPlay, setIsPlay] = useState(true);
   const togglePlay = () => setIsPlay(prev => !prev);
 
@@ -261,13 +264,15 @@ function VisualBannerTV({
 
   const { data: movieVideoData } = useQuery(
     "movieVideoData",
-    () => getMovieVideos(PopularTVData[0].id)
+    () => getMovieVideos(TopRatedTVData[0].id)
   );
 
   const { data: TVVideoData } = useQuery(
     "TVVideoData",
-    () => getTVVideos(PopularTVData[0].id)
+    () => getTVVideos(TopRatedTVData[0].id)
   );
+
+  console.log(TVVideoData?.results[0].key, "ddd");
 
   const clickToPlay = () => {
     togglePlay();
@@ -286,7 +291,7 @@ function VisualBannerTV({
         <Banner>
           <DismissMask>
             <MotionLayer>
-              {isPlay && movieVideoData && TVVideoData && (
+              {isPlay && TVVideoData && TopRatedTVData && (
                 <VideoWrapper>
                   <ReactPlayer
                     url={`https://youtu.be/${TVVideoData?.results[0].key}`}
@@ -302,7 +307,7 @@ function VisualBannerTV({
                 </VideoWrapper>
               )}
               <ImageWrapper>
-                <img src={makeImagePath(String(PopularTVData[0].backdrop_path))} alt={PopularTVData[0].name ? PopularTVData[0].name : PopularTVData[0].original_name} />
+                <img src={makeImagePath(String(TopRatedTVData[0].backdrop_path))} alt={TopRatedTVData[0].title ? TopRatedTVData[0].title : TopRatedTVData[0].original_name} />
                 <VideoVignette />
                 <HeroVignette />
               </ImageWrapper>
@@ -318,7 +323,7 @@ function VisualBannerTV({
                     delay: 0.4,
                     duration: 1
                   }}>
-                  {PopularTVData[0].original_name ? PopularTVData[0].original_name : PopularTVData[0].original_name}
+                  {TopRatedTVData[0].title ? TopRatedTVData[0].title : TopRatedTVData[0].original_name}
                 </OriginalTitle>
                 <Title
                   initial={{ opacity: 0, y: 15 }}
@@ -327,7 +332,7 @@ function VisualBannerTV({
                     delay: 0.4,
                     duration: 1
                   }}>
-                  {PopularTVData[0].name ? PopularTVData[0].name : PopularTVData[0].original_name}
+                  {TopRatedTVData[0].name ? TopRatedTVData[0].name : TopRatedTVData[0].original_name}
                 </Title>
                 <GenreTagList
                   initial={{ opacity: 0, y: 15 }}
@@ -338,7 +343,7 @@ function VisualBannerTV({
                   }}
                 >
                   {
-                    convertGenreIdToNm(PopularTVData[0].genre_ids).map((item: any) =>
+                    convertGenreIdToNm(TopRatedTVData[0].genre_ids).map((item: any) =>
                       <GenreTag key={item}>{item}</GenreTag>
                     )
                   }
@@ -351,7 +356,7 @@ function VisualBannerTV({
                     delay: 1.2,
                     duration: 1
                   }}
-                >{PopularTVData[0].popularity}</Overview>
+                >{TopRatedTVData[0].overview}</Overview>
 
 
                 <BtnList

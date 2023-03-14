@@ -22,6 +22,7 @@ import {
   IOnAirTV,
   IPopularTV,
   ITopRatedTV,
+  ITopRatedTVs,
   ITVProvider
 } from "../api";
 import styled from "styled-components";
@@ -86,7 +87,6 @@ function Tv() {
     getAiringTodayShow
   );
 
-
   return (
     <MainView
       initial={{ opacity: 0 }}
@@ -95,9 +95,9 @@ function Tv() {
     >
       <FullContainer>
         <h1>TV 메인페이지</h1>
-        {PopularTVData && TvGenreData && MovieGenreData && (
+        {TopRatedTVData && TvGenreData && MovieGenreData && (
           <VisualBannerTV
-            PopularTVData={PopularTVData.results as IPopularTV[]}
+            TopRatedTVData={TopRatedTVData.results as ITopRatedTV[]}
             TvGenreData={TvGenreData.genres as IGenre[]}
             MovieGenreData={MovieGenreData.genres as IGenre[]}
           />

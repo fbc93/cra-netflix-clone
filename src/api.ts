@@ -360,14 +360,14 @@ export function getTopRatedShows() {
 }
 
 //Get Videos [Movie]
-export function getMovieVideos(movieId: number) {
-  return fetch(`${BASE_PATH}/movie/${movieId}/videos${LAST_STRING}`)
+export function getMovieVideos(movieId: number, Lang?: string) {
+  return fetch(`${BASE_PATH}/movie/${movieId}/videos?api_key=${API_KEY}&language=${Lang}`)
     .then((res) => res.json());
 }
 
 //Get Videos [TV]
-export function getTVVideos(movieId: number) {
-  return fetch(`${BASE_PATH}/tv/${movieId}/videos${LAST_STRING}`)
+export function getTVVideos(movieId: number, Lang?: string) {
+  return fetch(`${BASE_PATH}/tv/${movieId}/videos?api_key=${API_KEY}&language=${Lang}`)
     .then((res) => res.json());
 }
 

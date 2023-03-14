@@ -273,7 +273,7 @@ function VisualBanner({
 
   const { data: TVVideoData } = useQuery(
     "TVVideoData",
-    () => getTVVideos(trendData[0].id)
+    () => getTVVideos(trendData[0].id, "ko-KR")
   );
 
   const clickToPlay = () => {
