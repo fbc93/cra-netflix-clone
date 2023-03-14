@@ -237,14 +237,14 @@ function UpcomingMovieSlider({
           ))}
         </SlideRow>
       </AnimatePresence>
-
-      {bigMovieMatch && (
-        <Modal
-          dataId={Number(bigMovieMatch?.params.upcomingId)}
-          movType={String(bigMovieMatch?.params.movType)}
-        />
-      )}
-
+      {
+        bigMovieMatch && (
+          <Modal
+            dataId={Number(bigMovieMatch?.params.upcomingId)}
+            movType={String(bigMovieMatch?.params.movType)}
+          />
+        )
+      }
     </Wrapper>
   );
 }

@@ -53,20 +53,7 @@ function Modal({
               exit={{ opacity: 0 }}
             />
 
-            {bigMovieMatch?.params.movType === "tv" ? (
-              <TVdetail
-                DetailData={DetailData as IGetTvDetail}
-                clickedMovie={clickedMovie as IGetTvDetail}
-                bigMovieMatch={bigMovieMatch as IbigMovieMatch}
-              />
 
-            ) : (
-              <Moviedetail
-                DetailData={DetailData as IGetTvDetail}
-                clickedMovie={clickedMovie as IGetTvDetail}
-                bigMovieMatch={bigMovieMatch as IbigMovieMatch}
-              />
-            )}
           </>
         ) : null}
       </AnimatePresence>

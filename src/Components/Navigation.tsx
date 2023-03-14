@@ -3,6 +3,7 @@ import { motion, useAnimation, useScroll } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import SearchIcon from '@mui/icons-material/Search';
 
 //style
 const FixedNav = styled(motion.nav)`
@@ -82,13 +83,15 @@ const SearchForm = styled(motion.form)`
   justify-content: left;
 `;
 
-const SearchIcon = styled(motion.button)`
-  margin-right:0.5rem;
-  background: transparent;
-  color:${props => props.theme.white.lighter};
-  padding:0;
-  border:0;
+const SearchIconLayer = styled(motion.button)`
   cursor:pointer;
+  background-color: transparent;
+  border:none;
+  padding:0;
+  margin-right:0.5rem;
+  svg {
+    color:${props => props.theme.white.lighter};
+  }
 `;
 
 const SearchInput = styled(motion.input)`
@@ -228,11 +231,11 @@ function Navigation() {
             transition={{ type: "linear" }}
             onSubmit={handleSubmit(onValid)}
           >
-            <SearchIcon
+            <SearchIconLayer
               onClick={toggleSearch}
               className="material-symbols-rounded">
-              search
-            </SearchIcon>
+              <SearchIcon fontSize='large' />
+            </SearchIconLayer>
             <SearchInput
               {...register("keyword", { required: true, minLength: 2 })}
               initial={{ width: 100 + "%" }}

@@ -1,57 +1,158 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import { IData, IGenre } from "../api";
+import { getMovieVideos, getTVVideos, IData, IGenre } from "../api";
 import { makeImagePath } from "../utils";
+import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ReactPlayer from "react-player";
+import { useQuery } from "react-query";
+import { useState } from "react";
+import { Skeleton } from "@mui/material";
+
+const Wrapper = styled.span`
+  display: block;
+  position: relative;
+  z-index: 1;
+`;
+
+const MainViewRow = styled.div`
+  left: 0;
+  position: relative;
+  right: 0;
+  top: 0;
+
+  background-color: #000;
+  margin-bottom: 20px;
+  padding-bottom: 40%;
+  user-select: none;
+`;
 
 const Banner = styled.section`
-  height: 85vh;
-  padding-top:6.8rem;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  position: relative;
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
-`;
 
-const Container = styled.div`
-  width: 113rem;
-  height: 100%;
-  margin: 0 auto;
-  display: flex;
-  padding: 0 3rem;
-`;
 
-const BackgdropImage = styled.div<{ bgImage: string }>`
-  background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,1)) ,url( ${props => props.bgImage});
+  background-color: #000;
+  height: 56.25vw;
   position: absolute;
-  left: 0;
-  top: 0;
-  background-repeat: no-repeat;
-  background-size: cover;
   width: 100%;
-  height: 80rem;
-  filter: brightness(0.7);
+  z-index: 0;
+`;
+
+const DismissMask = styled.div`
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+`;
+
+const MotionLayer = styled.div`
+  z-index: 2;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+`;
+
+const ImageWrapper = styled.div`
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  img {
+    background-position: 50%;
+    background-size: cover;
+    bottom: 0;
+    left: 0;
+    opacity: 1;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: opacity .4s cubic-bezier(.665,.235,.265,.8) 0s;
+    width: 100%;
+    z-index: 5;
+  }
+`;
+
+const VideoWrapper = styled.div``;
+const VideoVignette = styled.div`
+  background: linear-gradient(77deg,rgba(0,0,0,.6),transparent 85%);
+  bottom: 0;
+  left: 0;
+  opacity: 1;
+  position: absolute;
+  right: 26.09%;
+  top: 0;
+  transition: opacity .5s;
+  z-index: 8;
+`;
+const HeroVignette = styled.div`
+  background-color: transparent;
+  background-image: linear-gradient(180deg,hsla(0,0%,8%,0) 0,hsla(0,0%,8%,.15) 15%,hsla(0,0%,8%,.35) 29%,hsla(0,0%,8%,.58) 44%,#141414 68%,#141414);
+  background-position: 0 top;
+  background-repeat: repeat-x;
+  background-size: 100% 100%;
+  bottom: -1px;
+  height: 14.7vw;
+  opacity: 1;
+  top: auto;
+  width: 100%;
+
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 100;
+`;
+
+const FillContainer = styled.div`
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+`;
+
+const InfoLayer = styled.div`
+  bottom: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  left: 4%;
+  position: absolute;
+  top: 0;
+  width: 36%;
+  z-index: 10;
 `;
 
 const TitleBox = styled.div`
-  width: 70%;
-  align-self: center;
+  transition: transform 1.5s cubic-bezier(.165,.84,.44,1);
+  width: 100%;
 `;
 
 const Title = styled(motion.h2)`
-  font-size:4rem;
-  letter-spacing: -0.1rem;
-  margin-bottom:5rem;
+  font-size:3vw;
+  letter-spacing: -0.1vw;
+  margin-bottom:2vw;
   font-weight: bold;
+  text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
 `;
 
-const OriginalTitle = styled.span`
+const OriginalTitle = styled(motion.span)`
   color:rgba(255, 255, 255, 0.7);
-  font-size:2rem;
-  font-weight: 400;
-  margin-left:1rem;
+  font-size: 1vw;
+  margin-bottom: 1vw;
+  text-indent: 0.4vw;
+  letter-spacing: -0.1vw;
+  display: inline-block;
 `;
 
 const GenreTagList = styled(motion.ul)`
@@ -59,11 +160,12 @@ const GenreTagList = styled(motion.ul)`
   justify-content: left;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom:2.5rem;
+  margin-bottom:2vw;
+  text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
 `;
 
 const GenreTag = styled.li`
-  font-size:1.8rem;
+  font-size:1.2vw;
   color: ${props => props.theme.white.darker};
   position: relative;
   letter-spacing: -0.1rem;
@@ -84,85 +186,54 @@ const GenreTag = styled.li`
 `;
 
 const Overview = styled(motion.p)`
-  font-size: 1.8rem;
-  letter-spacing: -0.1rem;
-  line-height: 1.7;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  word-break: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  color: #fff;
+  font-size: 1vw;
+  font-weight: 400;
+  line-height: normal;
+  margin-top: 0.1vw;
+  text-shadow: 2px 2px 4px rgba(0,0,0,.45);
+  width: 100%;
 `;
 
 const BtnList = styled(motion.ul)`
   display: flex;
-  align-items: center;
-  margin-top:3rem;
-  width:100%;
+  line-height: 88%;
+  margin-top: 1.5vw;
+  white-space: nowrap;
+  position: relative;
+  z-index: 10;
 `;
 
-const TrailerPlayBtn = styled.button`
-  display: flex;
-  -webkit-box-align: center;
+const DefaultBtn = styled.button`
+  width:7vw;
+  height: 3vw;
   align-items: center;
-  width: 165px;
-  height: 60px;
-  padding: 1rem 0;
-  text-align: center;
   justify-content: center;
-  line-height: 1;
-  font-size: 1.8rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 400;
-  outline: none;
-  margin-right:1rem;
-  color:#000000;
-  cursor:pointer;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  font-size: 1.2vw;
+  font-weight: 500;
+  line-height: 2.4rem;
+  padding-left: 2rem;
+  padding-right: 2.4rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+  border:none;
+  cursor:pointer; 
+`;
 
-  span {
-    line-height: 1;
-  }
-
-  .material-symbols-rounded {
-    font-size:4rem;
-    margin-right:1.5rem;
-  }
-
+const TrailerPlayBtn = styled(DefaultBtn)`
   &:hover{
     background-color: rgba(255, 255, 255, 0.75);
   }
 `;
 
-const InfoBtn = styled.button`
-  display: flex;
-    -webkit-box-align: center;
-    align-items: center;
-    width: 260px;
-    padding: 1rem 0px;
-    text-align: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    border: none;
-    height: 60px;
-    border-radius: 0.5rem;
-    font-weight: 400;
-    outline: none;
-    background-color: rgba(109, 109, 110, 0.7);
-    color: rgb(255, 255, 255);
-    cursor: pointer;
-
-    span {
-      line-height: 1;
-    }
-
-  .material-symbols-rounded {
-    font-size:3rem;
-    margin-right:1.5rem;
-  }
-
+const InfoBtn = styled(DefaultBtn)`
+  width:10vw;
+  height: 3vw;
+  background-color: rgba(109, 109, 110, 0.7);
+  color: white;
   &:hover{
     background-color: rgba(109, 109, 110, 0.4);
   }
@@ -178,6 +249,9 @@ function VisualBanner({
   MovieGenreData: IGenre[]
 
 }) {
+  const [isPlay, setIsPlay] = useState(true);
+  const togglePlay = () => setIsPlay(prev => !prev);
+
   const convertGenreIdToNm = (genreArray: number[]) => {
     const genre = [];
     const result = [];
@@ -210,72 +284,134 @@ function VisualBanner({
     return result;
   }
 
+  const { data: movieVideoData } = useQuery(
+    "movieVideoData",
+    () => getMovieVideos(trendData[0].id)
+  );
+
+  const { data: TVVideoData } = useQuery(
+    "TVVideoData",
+    () => getTVVideos(trendData[0].id)
+  );
+
+  const clickToPlay = () => {
+    togglePlay();
+  }
+
   return (
-    <>
-      <BackgdropImage bgImage={makeImagePath(trendData[0].backdrop_path || "")} />
-      <Banner>
-        <Container>
-          <TitleBox>
-            <Title
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 0.4,
-                duration: 1
-              }}
-            >
-              {trendData[0].title ? trendData[0].title : trendData[0].name}
-              <OriginalTitle>
-                {trendData[0].original_name ? trendData[0].original_name : trendData[0].original_title}
-              </OriginalTitle>
-            </Title>
+    <Wrapper>
+      <MainViewRow>
+        <Skeleton
+          sx={{ bgcolor: 'grey.900' }}
+          variant="rectangular"
+          width={100 + "%"}
+          height={56.25 + "vw"}
+          style={{ position: "absolute", top: 0, left: 0 }}
+        />
+        <Banner>
+          <DismissMask>
+            <MotionLayer>
+              {isPlay && movieVideoData && TVVideoData && (
+                <VideoWrapper>
+                  <ReactPlayer
+                    url={`https://youtu.be/${trendData[0].media_type === String("movie") ? movieVideoData?.results[0].key : TVVideoData?.results[0].key}`}
+                    width="100vw"
+                    height="56.25vw"
+                    style={{ position: "relative", zIndex: 100, pointerEvents: "none" }}
+                    loop={true}
+                    playing={isPlay}
+                    muted={true}
+                    controls={false}
+                  />
+                  <HeroVignette />
+                </VideoWrapper>
+              )}
+              <ImageWrapper>
+                <img src={makeImagePath(String(trendData[0].backdrop_path))} alt={trendData[0].name ? trendData[0].name : trendData[0].title} />
+                <VideoVignette />
+                <HeroVignette />
+              </ImageWrapper>
+            </MotionLayer >
+          </DismissMask >
+          <FillContainer>
+            <InfoLayer>
+              <TitleBox>
+                <OriginalTitle
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.4,
+                    duration: 1
+                  }}>
+                  {trendData[0].original_name ? trendData[0].original_name : trendData[0].original_title}
+                </OriginalTitle>
+                <Title
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.4,
+                    duration: 1
+                  }}>
+                  {trendData[0].title ? trendData[0].title : trendData[0].name}
+                </Title>
+                <GenreTagList
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.8,
+                    duration: 1
+                  }}
+                >
+                  {
+                    convertGenreIdToNm(trendData[0].genre_ids).map((item: any) =>
+                      <GenreTag key={item}>{item}</GenreTag>
+                    )
+                  }
+                </GenreTagList>
 
-            <GenreTagList
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 0.8,
-                duration: 1
-              }}
-            >
-              {
-                convertGenreIdToNm(trendData[0].genre_ids).map((item: any) =>
-                  <GenreTag key={item}>{item}</GenreTag>
-                )
-              }
-            </GenreTagList>
+                <Overview
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 1.2,
+                    duration: 1
+                  }}
+                >{trendData[0].overview}</Overview>
 
-            <Overview
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 1.2,
-                duration: 1
-              }}
-            >{trendData[0].overview}</Overview>
 
-            <BtnList
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 1.6,
-                duration: 1
-              }}
-            >
-              <TrailerPlayBtn>
-                <span className="material-symbols-rounded">play_arrow</span>
-                <span>재생</span>
-              </TrailerPlayBtn>
-              <InfoBtn>
-                <span className="material-symbols-rounded">info</span>
-                <span>상세정보</span>
-              </InfoBtn>
-            </BtnList>
-          </TitleBox>
-        </Container>
-      </Banner>
-    </>
+                <BtnList
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 1.6,
+                    duration: 1
+                  }}
+                >
+                  <TrailerPlayBtn onClick={clickToPlay}>
+                    {isPlay ? (
+                      <>
+                        <PauseCircleOutlineIcon fontSize="large" style={{ marginRight: 7 }} />
+                        <span>정지</span>
+                      </>
+                    ) : (
+                      <>
+                        <PlayArrowRoundedIcon fontSize="large" style={{ marginRight: 7 }} />
+                        <span>재생</span>
+                      </>
+                    )}
 
+                  </TrailerPlayBtn>
+                  <InfoBtn>
+                    <InfoOutlinedIcon fontSize="large" style={{ marginRight: 7 }} />
+                    <span>상세정보</span>
+                  </InfoBtn>
+                </BtnList>
+              </TitleBox>
+            </InfoLayer>
+          </FillContainer>
+        </Banner >
+      </MainViewRow >
+    </Wrapper >
   );
 }
 

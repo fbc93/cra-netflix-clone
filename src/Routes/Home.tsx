@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import {
   getMovieGenre,
+  getMovieVideos,
   getMovieWatchProvider,
   getPopularPerson,
   getTopRatedShows,
@@ -27,6 +28,7 @@ import PopularPeopleSlider from "../Components/Slider/PopularPeopleSlider";
 import TrendSlider from "../Components/Slider/TrendSlider";
 import UpcomingMovieSlider from "../Components/Slider/UpcomingMovieSlider";
 import TopRatedTVSlider from "../Components/Slider/TopRatedTVSlider";
+import Skeleton from '@mui/material/Skeleton';
 
 const Loader = styled.div`
   height: 80rem;
@@ -40,13 +42,17 @@ const Loader = styled.div`
 `;
 
 const MainView = styled(motion.main)`
-  width:100%;
-  height: auto;
+  min-height: 1000px;
   position: relative;
   z-index: 0;
 `;
 
+const FullContainer = styled.div`
+  margin-top: -70px;
+`;
+
 function Home() {
+
   //DATA
   const { data: trendData, isLoading: trendingLoading } = useQuery<IGetTrend>(
     "trendingMovieTV",
@@ -88,42 +94,43 @@ function Home() {
     getPopularPerson
   );
 
-
   return (
     <MainView
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <Loader>Loading</Loader>
-      {trendingLoading ? <Loader /> :
-        <VisualBanner
-          trendData={trendData?.results as IData[]}
-          TvGenreData={TvGenreData?.genres as IGenre[]}
-          MovieGenreData={MovieGenreData?.genres as IGenre[]}
-        />
-      }
+      <FullContainer>
+        <h1>메인페이지</h1>
+        {trendData && TvGenreData && MovieGenreData && (
+          <VisualBanner
+            trendData={trendData.results as IData[]}
+            TvGenreData={TvGenreData.genres as IGenre[]}
+            MovieGenreData={MovieGenreData.genres as IGenre[]}
+          />
+        )}
 
-      <TrendSlider
-        title={"🏆 오늘 하루 인기있었던 영화 / TV시리즈"}
-        trendData={trendData?.results as IData[]}
-      />
-      <PopularPeopleSlider
-        popularPeopleData={PopularPersonData?.results as IPopularPerson[]}
-      />
-      <UpcomingMovieSlider
-        title={"🎉 Upcoming Movie! 개봉 예정 영화"}
-        upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
-        upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
-      />
-      <TopRatedTVSlider
-        title={"⭐️ 별이 다섯개! ⭐️ 최고의 평점을 받은 TV시리즈"}
-        topRatedTVData={TopRatedTVData?.results as ITopRatedTV[]}
-      />
-      <ProviderSlider
-        MovieProviderData={MovieProviderData?.results.slice(0, 20) as IMovieProvider[]}
-        TVProviderData={TVProviderData?.results.slice(20, 40) as ITVProvider[]}
-      />
+        <TrendSlider
+          title={"🏆 오늘 하루 인기있었던 영화 / TV시리즈"}
+          trendData={trendData?.results as IData[]}
+        />
+        {/* <PopularPeopleSlider
+          popularPeopleData={PopularPersonData?.results as IPopularPerson[]}
+        />
+        <UpcomingMovieSlider
+          title={"🎉 Upcoming Movie! 개봉 예정 영화"}
+          upcomingData={upcomingMovieData?.results as IGetUpcomingMovie[]}
+          upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
+        />
+        <TopRatedTVSlider
+          title={"⭐️ 별이 다섯개! ⭐️ 최고의 평점을 받은 TV시리즈"}
+          topRatedTVData={TopRatedTVData?.results as ITopRatedTV[]}
+        />
+        <ProviderSlider
+          MovieProviderData={MovieProviderData?.results.slice(0, 20) as IMovieProvider[]}
+          TVProviderData={TVProviderData?.results.slice(20, 40) as ITVProvider[]}
+        /> */}
+      </FullContainer>
     </MainView >
   );
 }
