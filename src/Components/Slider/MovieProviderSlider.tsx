@@ -10,7 +10,7 @@ const SliderContainer = styled.div`
   height: 5vh;
   overflow: hidden;
   position: relative;
-  margin-top:5vh;
+  margin-top:3vh;
   margin-bottom:2vh;
 
 `;

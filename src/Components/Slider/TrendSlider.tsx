@@ -11,9 +11,12 @@ import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRound
 import { useRecoilValue } from "recoil";
 import { slideCnt } from "../../atoms";
 import { duration, Skeleton } from "@mui/material";
+import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
+import ControlPointOutlinedIcon from '@mui/icons-material/ControlPointOutlined';
 
 const Wrapper = styled.section`
-  margin: 3vw 0;
+  margin: 4vw 0;
   position: relative;
   z-index: 1;
 `;
@@ -36,8 +39,11 @@ const RowTitle = styled.title`
   display: inline-block;
   font-size: 1.4vw;
   font-weight: 500;
-  margin: 0 4% 0.5em;
+  margin: 0 4% 2rem;
   min-width: 6em;
+  position: relative;
+  z-index: 1;
+  text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
 `;
 const Slider = styled.div`
   position: relative;
@@ -53,11 +59,19 @@ const SliderItem = styled(motion.div) <{ offset: number }>`
   cursor:pointer;
   height: 10vw;
   position: relative;
+  z-index:10;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  
   &:first-child {
     transform-origin: center left!important;
   }
   &:last-child {
     transform-origin: center right!important;
+  }
+  &:hover{
+    .info-box {
+      opacity:1;
+    }
   }
 `;
 const BackDropImage = styled(motion.div) <{ bgimg: string }>`
@@ -68,6 +82,66 @@ const BackDropImage = styled(motion.div) <{ bgimg: string }>`
   background: url(${(props) => props.bgimg}) no-repeat top center;
   background-size: cover;
   z-index:2;
+`;
+const TypeTag = styled(motion.div) <{ tagcolor: string }>`
+  position: absolute;
+  top: 0.5vw;
+  right: 0.5vw;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  background-color: ${(props) => props.tagcolor};
+  width: 4vw;
+  height: 4vw;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  span {
+    font-size:0.8vw;
+    letter-spacing: -0.1vw;
+    text-align: center;
+    font-weight: 700;
+    text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
+    &:first-child{
+      margin-bottom:0.5vw;
+    }
+  }
+`;
+const InfoBottomBox = styled.div`
+  width: 100%;
+  text-align: left;
+  height: 6vw;
+  background-color: rgb(51, 51, 51);
+  padding: 0.3vw 1vw 1vw 1vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  transition-delay: 0.2s;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+  p{
+    font-size:1vw;
+    letter-spacing: -0.1vw;
+    font-weight: 700;
+  }
+`;
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  ul {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom:0.8vw;
+
+    li {
+      margin-right:0.3vw;
+    }
+  }
 `;
 const Handle = styled.span`
   bottom: 0;
@@ -139,12 +213,12 @@ function TrendSlider({
     },
     hover: {
       scale: 1.2,
-      y: -30,
+      y: -50,
       zIndex: 30,
       transition: {
         delay: 0.2,
         duration: 0.2,
-        type: "tween"
+        type: "linear"
       }
     }
   }
@@ -205,6 +279,7 @@ function TrendSlider({
               {trendData?.slice(1)
                 .slice(offset * index, offset * index + offset)
                 .map((movie: IData) => (
+
                   <SliderItem
                     key={movie.id}
                     layoutId={movie.id + "trend"}
@@ -228,7 +303,31 @@ function TrendSlider({
                       transition={{ delay: 1.6 }}
                       bgimg={makeThumnailPath(String(movie.backdrop_path))}
                     />
+                    {movie.media_type === String("movie") ? (
+                      <TypeTag tagcolor="rgba(238, 82, 83,1.0)" >
+                        <span>🎬</span>
+                        <span>영화</span>
+                      </TypeTag>
+                    ) : (
+                      <TypeTag tagcolor="rgba(46, 134, 222,1.0)" >
+                        <span>📺</span>
+                        <span>시리즈</span>
+                      </TypeTag>
+                    )}
+                    <InfoBottomBox className="info-box">
+                      <IconWrapper>
+                        <ul>
+                          <li><StopCircleOutlinedIcon fontSize="large" /></li>
+                          <li><ExpandCircleDownOutlinedIcon fontSize="large" /></li>
+                          <li><ControlPointOutlinedIcon fontSize="large" /></li>
+                        </ul>
+                        <ExpandCircleDownOutlinedIcon fontSize="large" />
+                      </IconWrapper>
+
+                      <p>{movie.name ? movie.name : movie.title}</p>
+                    </InfoBottomBox>
                   </SliderItem>
+
                 ))}
             </SliderContainer>
           </AnimatePresence>

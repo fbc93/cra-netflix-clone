@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { getMovieVideos, getTVVideos, IData, IGenre } from "../api";
 import { makeImagePath } from "../utils";
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
-import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
+import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
@@ -189,7 +189,7 @@ const BtnList = styled(motion.ul)`
   z-index: 10;
 `;
 const DefaultBtn = styled.button`
-  width:7vw;
+  width:8vw;
   height: 3vw;
   align-items: center;
   justify-content: center;
@@ -197,7 +197,7 @@ const DefaultBtn = styled.button`
   display: flex;
   font-size: 1.2vw;
   font-weight: 500;
-  line-height: 2.4rem;
+  line-height: 2;
   padding-left: 2rem;
   padding-right: 2.4rem;
   border-radius: 4px;
@@ -279,11 +279,6 @@ function VisualBanner({
   const clickToPlay = () => {
     togglePlay();
   }
-
-
-
-
-
 
   return (
     <Wrapper>
@@ -377,7 +372,7 @@ function VisualBanner({
                   <TrailerPlayBtn onClick={clickToPlay}>
                     {isPlay ? (
                       <>
-                        <PauseCircleOutlineIcon fontSize="large" style={{ marginRight: 7 }} />
+                        <StopCircleOutlinedIcon fontSize="large" style={{ marginRight: 7 }} />
                         <span>정지</span>
                       </>
                     ) : (

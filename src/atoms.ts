@@ -12,7 +12,7 @@ export const slideCnt = selector({
   get: ({ get }) => {
     const width = get(windowWidth);
     if (width > 1400) {
-      return 6;
+      return 5;
     } else if (width > 1130) {
       return 5;
     } else if (width > 900) {

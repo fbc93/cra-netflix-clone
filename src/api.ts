@@ -41,6 +41,8 @@ export interface ITopRatedTV {
   overview: string;
   origin_country: string[];
   genre_ids: number[];
+  media_type: string;
+  title: string;
 }
 
 export interface ITopRatedTVs {
@@ -60,6 +62,7 @@ export interface IGetUpcomingMovie {
   original_title: string;
   original_language: string;
   title: string;
+  name: string;
   backdrop_path: string;
   vote_average: number;
   media_type: string;
