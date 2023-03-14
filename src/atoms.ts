@@ -3,7 +3,7 @@ import { atom, selector } from "recoil";
 export const windowWidth = atom({
   key: "windowWidth",
   default: window.innerWidth,
-})
+});
 
 
 

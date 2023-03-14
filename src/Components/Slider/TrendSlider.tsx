@@ -4,7 +4,7 @@ import { useMatch, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IData } from "../../api";
 import useWindowDimensions from "../../useWidowDimensions";
-import { makeImagePath } from "../../utils";
+import { makeImagePath, makeThumnailPath } from "../../utils";
 import Modal from "../Modal";
 import ArrowBackIosRoundedIcon from '@mui/icons-material/ArrowBackIosRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
@@ -42,18 +42,23 @@ const RowTitle = styled.title`
 const Slider = styled.div`
   position: relative;
 `;
-const SliderContainer = styled(motion.div)`
+const SliderContainer = styled(motion.div) <{ gridcount: number }>`
   width:100%;
   position: absolute;
   display: grid;
   gap:10px;
-  grid-template-columns: repeat(6,1fr);
+  grid-template-columns: repeat(${(props) => props.gridcount},1fr);
 `;
 const SliderItem = styled(motion.div) <{ offset: number }>`
-  //background-color: rgba(0,0,0,0.5);
   cursor:pointer;
   height: 10vw;
   position: relative;
+  &:first-child {
+    transform-origin: center left!important;
+  }
+  &:last-child {
+    transform-origin: center right!important;
+  }
 `;
 const BackDropImage = styled(motion.div) <{ bgimg: string }>`
   width:100%;
@@ -93,7 +98,7 @@ function TrendSlider({
   trendData: IData[],
   title: string;
 }) {
-  const offset = 6;
+  const offset = useRecoilValue(slideCnt);
   const [index, setIndex] = useState(0);
   const [isRight, setIsRight] = useState(1); // left -1, right 1
   const [leaving, setLeaving] = useState(false);
@@ -134,11 +139,11 @@ function TrendSlider({
     },
     hover: {
       scale: 1.2,
-      y: -50,
+      y: -30,
       zIndex: 30,
       transition: {
         delay: 0.2,
-        duration: 0.3,
+        duration: 0.2,
         type: "tween"
       }
     }
@@ -186,6 +191,7 @@ function TrendSlider({
           >
             <SliderContainer
               key={index}
+              gridcount={offset}
               custom={isRight}
               variants={SliderContainerVar}
               initial="hidden"
@@ -220,7 +226,7 @@ function TrendSlider({
                       initial="hidden"
                       animate="visible"
                       transition={{ delay: 1.6 }}
-                      bgimg={makeImagePath(String(movie.backdrop_path))}
+                      bgimg={makeThumnailPath(String(movie.backdrop_path))}
                     />
                   </SliderItem>
                 ))}

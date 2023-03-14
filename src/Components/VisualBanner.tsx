@@ -7,7 +7,7 @@ import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "@mui/material";
 
 const Wrapper = styled.span`
@@ -15,7 +15,6 @@ const Wrapper = styled.span`
   position: relative;
   z-index: 1;
 `;
-
 const MainViewRow = styled.div`
   left: 0;
   position: relative;
@@ -27,7 +26,6 @@ const MainViewRow = styled.div`
   padding-bottom: 40%;
   user-select: none;
 `;
-
 const Banner = styled.section`
   
   display: flex;
@@ -41,7 +39,6 @@ const Banner = styled.section`
   width: 100%;
   z-index: 0;
 `;
-
 const DismissMask = styled.div`
   bottom: 0;
   left: 0;
@@ -49,7 +46,6 @@ const DismissMask = styled.div`
   right: 0;
   top: 0;
 `;
-
 const MotionLayer = styled.div`
   z-index: 2;
   bottom: 0;
@@ -58,7 +54,6 @@ const MotionLayer = styled.div`
   right: 0;
   top: 0;
 `;
-
 const ImageWrapper = styled.div`
   bottom: 0;
   left: 0;
@@ -80,7 +75,6 @@ const ImageWrapper = styled.div`
     z-index: 5;
   }
 `;
-
 const VideoWrapper = styled.div``;
 const VideoVignette = styled.div`
   background: linear-gradient(77deg,rgba(0,0,0,.6),transparent 85%);
@@ -110,7 +104,6 @@ const HeroVignette = styled.div`
   right: 0;
   z-index: 100;
 `;
-
 const FillContainer = styled.div`
   bottom: 0;
   left: 0;
@@ -120,7 +113,6 @@ const FillContainer = styled.div`
   height: 100%;
   width: 100%;
 `;
-
 const InfoLayer = styled.div`
   bottom: 35%;
   display: flex;
@@ -132,12 +124,10 @@ const InfoLayer = styled.div`
   width: 36%;
   z-index: 10;
 `;
-
 const TitleBox = styled.div`
   transition: transform 1.5s cubic-bezier(.165,.84,.44,1);
   width: 100%;
 `;
-
 const Title = styled(motion.h2)`
   font-size:3vw;
   letter-spacing: -0.1vw;
@@ -145,7 +135,6 @@ const Title = styled(motion.h2)`
   font-weight: bold;
   text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
 `;
-
 const OriginalTitle = styled(motion.span)`
   color:rgba(255, 255, 255, 0.7);
   font-size: 1vw;
@@ -154,7 +143,6 @@ const OriginalTitle = styled(motion.span)`
   letter-spacing: -0.1vw;
   display: inline-block;
 `;
-
 const GenreTagList = styled(motion.ul)`
   display: flex;
   justify-content: left;
@@ -163,7 +151,6 @@ const GenreTagList = styled(motion.ul)`
   margin-bottom:2vw;
   text-shadow: rgba(0, 0, 0, 0.45) 2px 2px 4px;
 `;
-
 const GenreTag = styled.li`
   font-size:1.2vw;
   color: ${props => props.theme.white.darker};
@@ -184,7 +171,6 @@ const GenreTag = styled.li`
     }
   }
 `;
-
 const Overview = styled(motion.p)`
   color: #fff;
   font-size: 1vw;
@@ -194,7 +180,6 @@ const Overview = styled(motion.p)`
   text-shadow: 2px 2px 4px rgba(0,0,0,.45);
   width: 100%;
 `;
-
 const BtnList = styled(motion.ul)`
   display: flex;
   line-height: 88%;
@@ -203,7 +188,6 @@ const BtnList = styled(motion.ul)`
   position: relative;
   z-index: 10;
 `;
-
 const DefaultBtn = styled.button`
   width:7vw;
   height: 3vw;
@@ -222,13 +206,11 @@ const DefaultBtn = styled.button`
   border:none;
   cursor:pointer; 
 `;
-
 const TrailerPlayBtn = styled(DefaultBtn)`
   &:hover{
     background-color: rgba(255, 255, 255, 0.75);
   }
 `;
-
 const InfoBtn = styled(DefaultBtn)`
   width:10vw;
   height: 3vw;
@@ -297,6 +279,11 @@ function VisualBanner({
   const clickToPlay = () => {
     togglePlay();
   }
+
+
+
+
+
 
   return (
     <Wrapper>
