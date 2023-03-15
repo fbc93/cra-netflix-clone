@@ -281,8 +281,8 @@ function TrendSlider({
                 .map((movie: IData) => (
 
                   <SliderItem
-                    key={movie.id}
-                    layoutId={movie.id + "trend"}
+                    key={movie.id + "_trend"}
+                    layoutId={movie.id + "_trend"}
                     variants={SliderItemVar}
                     initial="normal"
                     whileHover="hover"
@@ -296,7 +296,7 @@ function TrendSlider({
                       height={100 + "%"}
                     />
                     <BackDropImage
-                      key={`${movie.id}_back_bg`}
+                      key={`${movie.id}_back_bg_trend`}
                       variants={BackBgVar}
                       initial="hidden"
                       animate="visible"

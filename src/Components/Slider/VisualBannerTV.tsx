@@ -7,7 +7,7 @@ import ReactPlayer from "react-player";
 import { useQuery } from "react-query";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@mui/material";
-import { getMovieVideos, getTVVideos, IData, IGenre, IPopularTV, ITopRatedTV } from "../../api";
+import { getMovieVideos, getTVVideos, IData, IGenre, IPopularTV, ITopRatedTV, ITVVideo } from "../../api";
 import { makeImagePath } from "../../utils";
 
 const Wrapper = styled.span`
@@ -223,16 +223,16 @@ const InfoBtn = styled(DefaultBtn)`
 
 function VisualBannerTV({
   TopRatedTVData,
+  TVVideoData,
   TvGenreData,
   MovieGenreData
 }: {
   TopRatedTVData: ITopRatedTV[],
+  TVVideoData: ITVVideo[],
   TvGenreData: IGenre[],
   MovieGenreData: IGenre[]
 
 }) {
-
-
 
   const [isPlay, setIsPlay] = useState(true);
   const togglePlay = () => setIsPlay(prev => !prev);
@@ -262,18 +262,6 @@ function VisualBannerTV({
     return result;
   }
 
-  const { data: movieVideoData } = useQuery(
-    "movieVideoData",
-    () => getMovieVideos(TopRatedTVData[0].id)
-  );
-
-  const { data: TVVideoData } = useQuery(
-    "TVVideoData",
-    () => getTVVideos(TopRatedTVData[0].id)
-  );
-
-  console.log(TVVideoData?.results[0].key, "ddd");
-
   const clickToPlay = () => {
     togglePlay();
   }
@@ -294,7 +282,7 @@ function VisualBannerTV({
               {isPlay && TVVideoData && TopRatedTVData && (
                 <VideoWrapper>
                   <ReactPlayer
-                    url={`https://youtu.be/${TVVideoData?.results[0].key}`}
+                    url={`https://youtu.be/${TVVideoData[0].key}`}
                     width="100vw"
                     height="56.25vw"
                     style={{ position: "relative", zIndex: 100, pointerEvents: "none" }}

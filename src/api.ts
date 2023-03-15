@@ -1,3 +1,20 @@
+export interface IMovieVideo {
+  key: string;
+  id: number;
+}
+
+export interface IMovieVideos {
+  results: IMovieVideo[];
+}
+
+export interface ITVVideo {
+  key: string;
+}
+
+export interface ITVVideos {
+  results: ITVVideo[];
+}
+
 export interface IOnAirTodayTV {
   backdrop_path: string;
   first_air_date: string;
@@ -360,14 +377,14 @@ export function getTopRatedShows() {
 }
 
 //Get Videos [Movie]
-export function getMovieVideos(movieId: number, Lang?: string) {
-  return fetch(`${BASE_PATH}/movie/${movieId}/videos?api_key=${API_KEY}&language=${Lang}`)
+export function getMovieVideos(movieId: number) {
+  return fetch(`${BASE_PATH}/movie/${movieId}/videos?api_key=${API_KEY}`)
     .then((res) => res.json());
 }
 
 //Get Videos [TV]
-export function getTVVideos(movieId: number, Lang?: string) {
-  return fetch(`${BASE_PATH}/tv/${movieId}/videos?api_key=${API_KEY}&language=${Lang}`)
+export function getTVVideos(movieId: number) {
+  return fetch(`${BASE_PATH}/tv/${movieId}/videos?api_key=${API_KEY}`)
     .then((res) => res.json());
 }
 

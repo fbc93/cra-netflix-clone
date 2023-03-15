@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import { getMovieVideos, getTVVideos, IData, IGenre } from "../api";
+import { getMovieVideos, getTVVideos, IData, IGenre, IMovieVideo, IMovieVideos, ITVVideo } from "../api";
 import { makeImagePath } from "../utils";
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import StopCircleOutlinedIcon from '@mui/icons-material/StopCircleOutlined';
@@ -231,6 +231,7 @@ function VisualBanner({
   MovieGenreData: IGenre[]
 
 }) {
+  const VisualData = trendData[0];
   const [isPlay, setIsPlay] = useState(true);
   const togglePlay = () => setIsPlay(prev => !prev);
 
@@ -244,7 +245,7 @@ function VisualBanner({
 
         for (let j = 0; j < genre.length; j++) {
 
-          if (trendData[0].media_type as any === "tv") {
+          if (VisualData.media_type as any === "tv") {
             for (let k = 0; k < TvGenreData?.length; k++) {
               if (genre[j] === TvGenreData[k].id) {
                 genre[j] = TvGenreData[k].name;
@@ -252,7 +253,7 @@ function VisualBanner({
               }
             }
 
-          } else if (trendData[0].media_type as any === "movie") {
+          } else if (VisualData.media_type as any === "movie") {
             for (let k = 0; k < MovieGenreData?.length; k++) {
               if (genre[j] === MovieGenreData[k].id) {
                 genre[j] = MovieGenreData[k].name;
@@ -266,19 +267,24 @@ function VisualBanner({
     return result;
   }
 
+  const clickToPlay = () => {
+    togglePlay();
+  }
+
+
+
+  //DATA
   const { data: movieVideoData } = useQuery(
     "movieVideoData",
-    () => getMovieVideos(trendData[0].id)
+    () => getMovieVideos(VisualData.id)
   );
 
   const { data: TVVideoData } = useQuery(
     "TVVideoData",
-    () => getTVVideos(trendData[0].id, "ko-KR")
+    () => getTVVideos(VisualData.id)
   );
 
-  const clickToPlay = () => {
-    togglePlay();
-  }
+
 
   return (
     <Wrapper>
@@ -293,10 +299,10 @@ function VisualBanner({
         <Banner>
           <DismissMask>
             <MotionLayer>
-              {isPlay && movieVideoData && TVVideoData && (
+              {isPlay && trendData && movieVideoData && TVVideoData && (
                 <VideoWrapper>
                   <ReactPlayer
-                    url={`https://youtu.be/${trendData[0].media_type === String("movie") ? movieVideoData?.results[0].key : TVVideoData?.results[0].key}`}
+                    url={`https://youtu.be/${VisualData.media_type === String("movie") ? movieVideoData?.results[0].key : TVVideoData?.results[0].key}`}
                     width="100vw"
                     height="56.25vw"
                     style={{ position: "relative", zIndex: 100, pointerEvents: "none" }}
@@ -309,7 +315,7 @@ function VisualBanner({
                 </VideoWrapper>
               )}
               <ImageWrapper>
-                <img src={makeImagePath(String(trendData[0].backdrop_path))} alt={trendData[0].name ? trendData[0].name : trendData[0].title} />
+                <img src={makeImagePath(String(VisualData.backdrop_path))} alt={VisualData.name ? VisualData.name : VisualData.title} />
                 <VideoVignette />
                 <HeroVignette />
               </ImageWrapper>
@@ -325,7 +331,7 @@ function VisualBanner({
                     delay: 0.4,
                     duration: 1
                   }}>
-                  {trendData[0].original_name ? trendData[0].original_name : trendData[0].original_title}
+                  {VisualData.original_name ? VisualData.original_name : VisualData.original_title}
                 </OriginalTitle>
                 <Title
                   initial={{ opacity: 0, y: 15 }}
@@ -334,7 +340,7 @@ function VisualBanner({
                     delay: 0.4,
                     duration: 1
                   }}>
-                  {trendData[0].title ? trendData[0].title : trendData[0].name}
+                  {VisualData.title ? VisualData.title : VisualData.name}
                 </Title>
                 <GenreTagList
                   initial={{ opacity: 0, y: 15 }}
@@ -345,7 +351,7 @@ function VisualBanner({
                   }}
                 >
                   {
-                    convertGenreIdToNm(trendData[0].genre_ids).map((item: any) =>
+                    convertGenreIdToNm(VisualData.genre_ids).map((item: any) =>
                       <GenreTag key={item}>{item}</GenreTag>
                     )
                   }
@@ -358,7 +364,7 @@ function VisualBanner({
                     delay: 1.2,
                     duration: 1
                   }}
-                >{trendData[0].overview}</Overview>
+                >{VisualData.overview}</Overview>
 
 
                 <BtnList

@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import {
   getMovieGenre,
+  getMovieVideos,
   getTopRatedShows,
   getTrending,
   getTvGenre,
+  getTVVideos,
   getUpcomingMovies,
   IData,
   IGenre,
@@ -12,7 +14,9 @@ import {
   IGetTrend,
   IGetUpcomingMovie,
   IGetUpcomingMovies,
+  IMovieVideo,
   ITopRatedTV,
+  ITVVideo,
 } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
@@ -31,7 +35,7 @@ const FullContainer = styled.div`
 
 function Home() {
   //DATA
-  const { data: trendData } = useQuery<IGetTrend>(
+  const { data: trendData } = useQuery(
     "trendingMovieTV",
     getTrending
   );

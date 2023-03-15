@@ -9,6 +9,7 @@ import {
   getTopRatedShows,
   getTrending,
   getTvGenre,
+  getTVVideos,
   getTVWatchProviders,
   getUpcomingMovies,
   IData,
@@ -23,7 +24,8 @@ import {
   IPopularTV,
   ITopRatedTV,
   ITopRatedTVs,
-  ITVProvider
+  ITVProvider,
+  ITVVideo
 } from "../api";
 import styled from "styled-components";
 import VisualBanner from "../Components/VisualBanner";
@@ -87,6 +89,11 @@ function Tv() {
     getAiringTodayShow
   );
 
+  const { data: TVVideoData } = useQuery(
+    "TVVideoData",
+    () => getTVVideos(TopRatedTVData?.results[0].id)
+  );
+
   return (
     <MainView
       initial={{ opacity: 0 }}
@@ -95,51 +102,32 @@ function Tv() {
     >
       <FullContainer>
         <h1>TV 메인페이지</h1>
-        {TopRatedTVData && TvGenreData && MovieGenreData && (
+        {TopRatedTVData && TVVideoData && TvGenreData && MovieGenreData && (
           <VisualBannerTV
             TopRatedTVData={TopRatedTVData.results as ITopRatedTV[]}
+            TVVideoData={TVVideoData?.results as ITVVideo[]}
             TvGenreData={TvGenreData.genres as IGenre[]}
             MovieGenreData={MovieGenreData.genres as IGenre[]}
           />
         )}
-
-
         {ontheAirTVData && (
           <OntheAirTVSlider
             title={"📺 방영 중인 시리즈를 살펴보세요!"}
             onAirTVData={ontheAirTVData.results as IOnAirTV[]}
           />
         )}
-
         {PopularTVData && (
           <PopularTVSlider
             title={"👀 나만빼고 다 봤어요! 유명한 띵작 TV시리즈"}
             PopularTVData={PopularTVData.results as IPopularTV[]}
           />
         )}
-
         {todayAirTVData && (
           <TodayAirTVSlider
             title={"🔥 오늘 방영되는 컨텐츠"}
             todayAirTVData={todayAirTVData.results as IOnAirTodayTV[]}
           />
         )}
-
-
-        {/* {upcomingMovieData && (
-          <UpcomingMovieSlider
-            title={"🎉 Upcoming Movie! 개봉 예정 영화"}
-            upcomingData={upcomingMovieData.results as IGetUpcomingMovie[]}
-            upcomingTermData={upcomingMovieData as IGetUpcomingMovies}
-          />
-
-        )}
-        {TopRatedTVData && (
-          <TopRatedTVSlider
-            title={"⭐️ 별이 다섯개! ⭐️ 최고의 평점을 받은 TV시리즈"}
-            topRatedTVData={TopRatedTVData.results as ITopRatedTV[]}
-          />
-        )} */}
       </FullContainer>
     </MainView >
   );
